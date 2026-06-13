@@ -1,6 +1,16 @@
 from pygame import *
 import sys
 
+
+def geraMapa(mapa,listaMapa):
+    for linha in mapa:
+        linha_limpa = linha.strip()
+        linha_mapa = linha_limpa.split(',')
+        listaMapa.append(linha_mapa)
+
+arq_mapa1 = open ('mapa1.txt', 'r')
+mapa1 = []  
+
 init()
 
 window = display.set_mode((1056,624))
@@ -11,25 +21,10 @@ tileset_floor = image.load('modern interior usando/Room_Bulder_subfiles_32x32/Ro
 
 tilesize = 32
 
+geraMapa(arq_mapa1,mapa1)
+print(mapa1)
 
-mapa = [
-    ['f','f','f','f'],
-    ['cse', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2','pbs2','csd'],
-    ['be',  'pi',  'pi',  'pi',  'pi',  'pi',  'pi',  'pi',  'pi', 'pi','bd'],
-    ['be', 'fcse1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1', 'fbs1', 'bd'],
-    ['be', 'fbe1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1',  'bd', 'f', 'cse', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2','csd' ],
-    ['be', 'fbe1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1',  'bd', 'f', 'be',  'pi',  'pi',  'pi',  'pi',  'pi',  'pi',  'pi',  'pi', 'bd' ],
-    ['be', 'fbe1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1',  'bd', 'f', 'be', 'fcse2', 'fbs2', 'fbs2', 'fbs2', 'fbs2', 'fbs2', 'fbs2', 'fbs2', 'bd'],
-    ['be', 'fbe1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1',  'bd', 'f', 'be', 'fbe2', 'floor2','floor2','floor2','floor2','floor2','floor2','floor2','bd'],
-    ['be', 'fbe1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1',  'bd', 'f', 'be', 'fbe2', 'floor2','floor2','floor2','floor2','floor2','floor2','floor2','bd' ],
-    ['be', 'fbe1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1', 'floor1',  'bd', 'f', 'be', 'fbe2', 'floor2','floor2','floor2','floor2','floor2','floor2','floor2','bd' ],
-    ['be', 'pbds', 'floor1', 'pbes', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2','pbs2','pbs2','pbs2','pbs2', 'pbs2', 'pbds', 'floor2', 'pbes', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2', 'pbs2','csd'],
-    ['be',  'pbdi', 'floor1', 'pbei',  'pi',  'pi',  'pi',  'pi',  'pi', 'pi', 'pi',  'pi', 'pi', 'pi', 'pbdi', 'floor2', 'pbei','pi', 'pi', 'pi', 'pi', 'pi', 'pi', 'pi', 'pi', 'pi', 'pi', 'pi', 'pi', 'pi', 'pi','bd', ],
-    ['be', 'fcse1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1', 'fbs1','fbs1',  'fbs1', 'fbs1','fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1', 'fbs1','fbs1',  'fbs1', 'fbs1','fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1',  'fbs1','bd'],
-    ['be', 'fbe1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1', 'floor1','floor1',  'floor1', 'floor1','floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1', 'floor1','floor1',  'floor1', 'floor1','floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1','bd'],
-    ['be', 'fbe1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1', 'floor1','floor1',  'floor1', 'floor1','floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1', 'floor1','floor1',  'floor1', 'floor1','floor1',  'floor1',  'floor1',  'floor1',  'floor1',  'floor1','bd'],
-    ['cie','bi', 'bi', 'bi', 'bi', 'bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','bi','cid']
-        ]
+
 blocos_escola = {
     'cse': (192,192),
     'pbs1': (0,576),
@@ -108,9 +103,9 @@ posicoes_objetos = [
 
 
 lista_colliders = []
-for i in range(len(mapa)):
-    for j in range(len(mapa[i])):
-        tile = mapa[i][j]
+for i in range(len(mapa1)):
+    for j in range(len(mapa1[i])):
+        tile = mapa1[i][j]
         
         if 'p' in tile or tile == 'f' or tile in ['be', 'bd', 'cse', 'csd', 'cie', 'cid', 'bi']:
             # Cria um retângulo na posição exata do tile
@@ -148,9 +143,9 @@ while True:
 
 
     #MAPA ESCOLA
-    for i in range(len(mapa)):
-        for j in range(len(mapa[i])):
-            tile = mapa[i][j]
+    for i in range(len(mapa1)):
+        for j in range(len(mapa1[i])):
+            tile = mapa1[i][j]
 
             coordenada_escola = blocos_escola.get(tile)
             if tile == 'f':

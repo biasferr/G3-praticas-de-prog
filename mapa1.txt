@@ -1,0 +1,16 @@
+f,f,f,f
+cse,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,csd
+be,pi,pi,pi,pi,pi,pi,pi,pi,pi,bd
+be,fcse1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,bd
+be,fbe1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,bd,f,cse,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,csd
+be,fbe1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,bd,f,be,pi,pi,pi,pi,pi,pi,pi,pi,bd
+be,fbe1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,bd,f,be,fcse2,fbs2,fbs2,fbs2,fbs2,fbs2,fbs2,fbs2,bd
+be,fbe1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,bd,f,be,fbe2,floor2,floor2,floor2,floor2,floor2,floor2,floor2,bd
+be,fbe1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,bd,f,be,fbe2,floor2,floor2,floor2,floor2,floor2,floor2,floor2,bd
+be,fbe1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,bd,f,be,fbe2,floor2,floor2,floor2,floor2,floor2,floor2,floor2,bd
+be,pbds,floor1,pbes,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbds,floor2,pbes,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,csd
+be,pbdi,floor1,pbei,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi,pbdi,floor2,pbei,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi,bd
+be,fcse1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,bd
+be,fbe1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,bd
+be,fbe1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,floor1,bd
+cie,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,bi,cid
