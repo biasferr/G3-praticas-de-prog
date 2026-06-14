@@ -8,12 +8,18 @@ def geraMapa(mapa,listaMapa):
         linha_mapa = linha_limpa.split(',')
         listaMapa.append(linha_mapa)
 
-arq_mapa1 = open ('mapa1.txt', 'r')
-mapa1 = []  
+def mudaEscala(animacao):
+    animacao = transform.scale(animacao,(768,128))
+    return animacao
+
 
 init()
-
 window = display.set_mode((1056,624))
+clock = time.Clock()
+
+#MAPA 1
+arq_mapa1 = open ('mapa1.txt', 'r')
+mapa1 = []  
 
 tileset_parede = image.load('modern interior usando/Room_Bulder_subfiles_32x32/Room_Builder_Walls_32x32.png')
 tileset_bordas = image.load('modern interior usando/Room_Bulder_subfiles_32x32/Room_Builder_borders_32x32.png')
@@ -22,7 +28,6 @@ tileset_floor = image.load('modern interior usando/Room_Bulder_subfiles_32x32/Ro
 tilesize = 32
 
 geraMapa(arq_mapa1,mapa1)
-print(mapa1)
 
 
 blocos_escola = {
@@ -71,7 +76,7 @@ obj= {
     'armario': image.load(f'{caminho_obj}40.png'), 'estante2': image.load(f'{caminho_obj}69.png'), 
     'placa': image.load('modern interior usando/genericos/Museum_Black_Shadow_Singles_32x32_27.png'),
     #mortos
-    'morto_coberto_sangue': image.load(f'{caminho_morto}518.png'), 'idosa_coberta': image.load(f'{caminho_morto}513.png'),
+    #'morto_coberto_sangue': image.load(f'{caminho_morto}518.png'), 'idosa_coberta': image.load(f'{caminho_morto}513.png'),
     #sangue
     'poça de sangue 1': image.load('modern interior usando/mortos/sangue/Halloween_Shadow_Singles_32x32_79.png'),
     'poça de sangue 2': image.load('modern interior usando/mortos/sangue/Halloween_Shadow_Singles_32x32_80.png'),
@@ -91,14 +96,14 @@ posicoes_objetos = [
     (obj['cart_vazia'], (32, 250)), (obj['cart_vazia'], (290, 250)),
     #sala2
     (obj['poça de sangue 2'],(500,250)), (obj['janela'], (500, 140), janela_crop), (obj['mapa_mundi'], (590, 140)), (obj['mesa_prof_lado'],(600,200)), 
-    (obj['quadro_lado'], (655,200)), (obj['cart_vazia_lado'],(505,255)), (obj['carteira_com_livro_lado'],(505,195)),
-    (obj['cart_vazia_lado'],(420,195)),(obj['cart_estojo_lado'],(420,255)), (obj['armario'],(130,335)), (obj['armario'],(162,335)),
+    (obj['quadro_lado'], (655,200)), (obj['cart_vazia_lado'],(505,240)), (obj['carteira_com_livro_lado'],(505,195)),
+    (obj['cart_vazia_lado'],(420,195)),(obj['cart_estojo_lado'],(420,240)), (obj['armario'],(130,335)), (obj['armario'],(162,335)),
     (obj['armario'],(194,335)), (obj['armario'],(226,335)), (obj['estante2'],(258,335)), (obj['armario'],(322,335)), (obj['armario'],(354,335)), (obj['globo'],(600,180)),
-    (obj['armario'],(550,335)),(obj['estante'],(582,335)), (obj['morto_coberto_sangue'],(90,110)),
-    (obj['placa'],(420,420)), (obj['poça de sangue 1'],(320,440)),(obj['poça de sangue 2'],(120,415)), (obj['idosa_coberta'],(120,400)),
-    (obj['cerebro'],(650,380)), (obj['poça de sangue 1'],(210,96)),(obj['poça de sangue 2'],(282,220)) ,(obj['garoto_morto'],(250,200)),
+    (obj['armario'],(550,335)),(obj['estante'],(582,335)),# (obj['morto_coberto_sangue'],(90,110)),
+    (obj['placa'],(420,420)), (obj['poça de sangue 1'],(320,440)),(obj['poça de sangue 2'],(120,415)), #(obj['idosa_coberta'],(120,400)),
+    (obj['cerebro'],(650,380)), (obj['poça de sangue 1'],(210,96)),(obj['poça de sangue 2'],(282,220)) ,#(obj['garoto_morto'],(250,200)),
     (obj['poça de sangue 1'],(590,290)),(obj['cerebro'],(280,285)),(obj['poça de sangue 1'],(650,460)),
-    (obj['homem_morto'],(650,440))
+    #(obj['homem_morto'],(650,440))
     ]
 
 
@@ -132,6 +137,82 @@ for item in posicoes_objetos:
             break
 
 
+#MOVIMENTAÇÃO PERSONAGEM
+# Load das imagens
+
+idle_up = image.load('Animacoes_movimentacao/Idle/Idle_Up.png')
+idle_up = mudaEscala(idle_up)
+idle_down = image.load('Animacoes_movimentacao/Idle/Idle_Down.png')
+idle_down = mudaEscala(idle_down)
+
+andar_up = image.load('Animacoes_movimentacao/andar/walk_Up.png')
+andar_up= mudaEscala(andar_up)
+andar_down = image.load('Animacoes_movimentacao/andar/walk_Down.png')
+andar_down= mudaEscala(andar_down)
+
+andar_left_up = image.load('Animacoes_movimentacao/andar/walk_Left_Up.png')
+andar_left_up= mudaEscala(andar_left_up)
+andar_left_down = image.load('Animacoes_movimentacao/andar/walk_Left_Down.png')
+andar_left_down= mudaEscala(andar_left_down)
+
+andar_right_up = image.load('Animacoes_movimentacao/andar/walk_Right_Up.png')
+andar_right_up= mudaEscala(andar_right_up)
+andar_right_down = image.load('Animacoes_movimentacao/andar/walk_Right_Down.png')
+andar_right_down= mudaEscala(andar_right_down)
+
+pulo_up = image.load('Animacoes_movimentacao/pular/Jump_Up.png')
+pulo_up=mudaEscala(pulo_up)
+pulo_down = image.load('Animacoes_movimentacao/pular/Jump_Down.png')
+pulo_down= mudaEscala(pulo_down)
+pulo_left = image.load('Animacoes_movimentacao/pular/Jump_Left_Down.png')
+pulo_left=mudaEscala(pulo_left)
+pulo_right = image.load('Animacoes_movimentacao/pular/Jump_Right_Down.png')
+pulo_right= mudaEscala(pulo_right)
+
+morrer_up = image.load('Animacoes_movimentacao/morrer/Death_Up.png')
+morrer_up=mudaEscala(morrer_up)
+morrer_down = image.load('Animacoes_movimentacao/morrer/Death_Down.png')
+morrer_down=mudaEscala(morrer_down)
+
+# Variáveis
+
+frame_atual_idle = 0
+anim_time_idle = 0
+
+pos_x = 500
+pos_y = 380
+velocidade = 14
+
+frame_atual_walkUp = 0
+anim_time_walkUp = 0
+
+frame_atual_walkDown = 0
+anim_time_walkDown = 0
+
+frame_atual_walkLeft = 0
+anim_time_walkLeft = 0
+
+frame_atual_walkRight = 0
+anim_time_walkRight = 0
+
+pular = False
+frame_atual_pulo = 0
+anim_time_pulo = 0
+
+vel_y = 0
+gravidade = 1
+altura_pulo = 0
+
+morrer = False
+frame_atual_morrer = 0
+anim_time_morrer = 0
+
+vidas = 3
+
+direcao = "right"
+direcao_vertical = "down"
+
+
 
 
 while True:
@@ -139,8 +220,46 @@ while True:
         if ev.type == QUIT:
             quit()
             sys.exit()
+        if ev.type == KEYDOWN and pular == False and morrer == False:
+            if ev.key == K_SPACE:
+                pular = True
+                vel_y = -16
+            if ev.key == K_v:
+                vidas -= 1
 
+    clock.tick(60)
+    dt = clock.get_time()
+    keys = key.get_pressed()
 
+    old_pos_x = pos_x
+    old_pos_y = pos_y
+
+    chaves_andar_up = keys[K_w]
+    chaves_andar_down = keys[K_s]
+    chaves_andar_left = keys[K_a]
+    chaves_andar_right = keys[K_d]
+
+    if vidas <= 0:
+        morrer = True
+
+    if morrer == True:
+        chaves_andar_up = False
+        chaves_andar_down = False
+        chaves_andar_left = False
+        chaves_andar_right = False
+        pular = False
+
+    if pular == True:
+        altura_pulo += vel_y * (dt/100)
+        vel_y += gravidade
+
+        if altura_pulo >= 0:
+            altura_pulo = 0
+            pular = False
+            vel_y = 0
+            frame_atual_pulo = 0
+
+    
 
     #MAPA ESCOLA
     for i in range(len(mapa1)):
@@ -179,12 +298,141 @@ while True:
     
     
     #APAGAR DPS
-    for colisor in lista_colliders:
-        draw.rect(window, (255, 0, 0), colisor, 2)
+    # for colisor in lista_colliders:
+    #     draw.rect(window, (255, 0, 0), colisor, 2)
     
 
-    #for colisor in lista_colisores:
-        #if jogador_rect.colliderect(colisor):
+    
+    anim_time_idle += dt
+    anim_time_idle_set = anim_time_idle / 1000
 
+
+    if morrer == True:
+
+        anim_time_morrer += dt
+        anim_time_morrer_set = anim_time_morrer / 1000
+
+        if anim_time_morrer_set > 0.1:
+            frame_atual_morrer += 1
+            if frame_atual_morrer > 7:
+                frame_atual_morrer = 7
+            anim_time_morrer = 0
+
+        if direcao_vertical == "up":
+            window.blit(morrer_up, (pos_x, pos_y), ((frame_atual_morrer * 96), 0, 96, 128))
+        else:
+            window.blit(morrer_down, (pos_x, pos_y), ((frame_atual_morrer * 96), 0, 96, 128))
+
+    elif chaves_andar_up == True:
+        direcao_vertical = "up"
+        pos_y -= velocidade * (dt/100)
+
+        anim_time_walkUp += dt
+        anim_time_walkUp_set = anim_time_walkUp / 1000
+
+        if anim_time_walkUp_set > 0.15:
+            frame_atual_walkUp += 1
+            if frame_atual_walkUp > 7:
+                frame_atual_walkUp = 0
+            anim_time_walkUp = 0
+
+        window.blit(andar_up, (pos_x, pos_y + altura_pulo), ((frame_atual_walkUp * 96), 0, 96, 128))
+
+
+    elif chaves_andar_down == True:
+        direcao_vertical = "down"
+        pos_y += velocidade * (dt/100)
+
+        anim_time_walkDown += dt
+        anim_time_walkDown_set = anim_time_walkDown / 1000
+
+        if anim_time_walkDown_set > 0.15:
+            frame_atual_walkDown += 1
+            if frame_atual_walkDown > 7:
+                frame_atual_walkDown = 0
+            anim_time_walkDown = 0
+
+        window.blit(andar_down, (pos_x, pos_y + altura_pulo), ((frame_atual_walkDown * 96), 0, 96, 128))
+
+
+    elif chaves_andar_left == True:
+        direcao = "left"
+        pos_x -= velocidade * (dt/100)
+
+        anim_time_walkLeft += dt
+        anim_time_walkLeft_set = anim_time_walkLeft / 1000
+
+        if anim_time_walkLeft_set > 0.15:
+            frame_atual_walkLeft += 1
+            if frame_atual_walkLeft > 7:
+                frame_atual_walkLeft = 0
+            anim_time_walkLeft = 0
+
+        if direcao_vertical == "up":
+            window.blit(andar_left_up, (pos_x, pos_y + altura_pulo), ((frame_atual_walkLeft * 96), 0, 96, 128))
+        else:
+            window.blit(andar_left_down, (pos_x, pos_y + altura_pulo), ((frame_atual_walkLeft * 96), 0, 96, 128))
+
+
+    elif chaves_andar_right == True:
+        direcao = "right"
+        pos_x += velocidade * (dt/100)
+
+        anim_time_walkRight += dt
+        anim_time_walkRight_set = anim_time_walkRight / 1000
+
+        if anim_time_walkRight_set > 0.15:
+            frame_atual_walkRight += 1
+            if frame_atual_walkRight > 7:
+                frame_atual_walkRight = 0
+            anim_time_walkRight = 0
+
+        if direcao_vertical == "up":
+            window.blit(andar_right_up, (pos_x, pos_y + altura_pulo), ((frame_atual_walkRight * 96), 0, 96, 128))
+        else:
+            window.blit(andar_right_down, (pos_x, pos_y + altura_pulo), ((frame_atual_walkRight * 96), 0, 96, 128))
+
+
+    elif pular == True:
+        anim_time_pulo += dt
+        anim_time_pulo_set = anim_time_pulo / 1000
+
+        if anim_time_pulo_set > 0.09:
+            frame_atual_pulo += 1
+            if frame_atual_pulo > 7:
+                frame_atual_pulo = 0
+            anim_time_pulo = 0
+
+        if direcao == "left":
+            window.blit(pulo_left, (pos_x, pos_y + altura_pulo), ((frame_atual_pulo * 96), 0, 96, 128))
+
+        elif direcao == "right":
+            window.blit(pulo_right, (pos_x, pos_y + altura_pulo), ((frame_atual_pulo * 96), 0, 96, 128))
+
+        elif direcao_vertical == "up":
+            window.blit(pulo_up, (pos_x, pos_y + altura_pulo), ((frame_atual_pulo * 96), 0, 96, 128))
+
+        else:
+            window.blit(pulo_down, (pos_x, pos_y + altura_pulo), ((frame_atual_pulo * 96), 0, 96, 128))
+
+
+    else:
+        if anim_time_idle_set > 0.15:
+            frame_atual_idle += 1
+            if frame_atual_idle > 7:
+                frame_atual_idle = 0
+            anim_time_idle = 0
+
+        if direcao_vertical == "up":
+            window.blit(idle_up, (pos_x, pos_y), ((frame_atual_idle * 96), 0, 96, 128))
+        else:
+            window.blit(idle_down, (pos_x, pos_y), ((frame_atual_idle * 96), 0, 96, 128))
+    
+    player_collider = Rect(pos_x+40,pos_y +65,20,20)
+    #draw.rect(window, (0,255,0), player_collider, 2)
+    for colisor in lista_colliders:
+            if player_collider.colliderect(colisor):
+                pos_x = old_pos_x
+                pos_y = old_pos_y
 
     display.update()

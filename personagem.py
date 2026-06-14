@@ -7,25 +7,25 @@ window = display.set_mode((720,624))
 
 # Load das imagens
 
-idle_up = image.load('Idle_Up.png')
-idle_down = image.load('Idle_Down.png')
+idle_up = image.load('Animacoes_movimentacao/Idle/Idle_Up.png')
+idle_down = image.load('Animacoes_movimentacao/Idle/Idle_Down.png')
 
-andar_up = image.load('walk_Up.png')
-andar_down = image.load('walk_Down.png')
+andar_up = image.load('Animacoes_movimentacao/andar/walk_Up.png')
+andar_down = image.load('Animacoes_movimentacao/andar/walk_Down.png')
 
-andar_left_up = image.load('walk_Left_Up.png')
-andar_left_down = image.load('walk_Left_Down.png')
+andar_left_up = image.load('Animacoes_movimentacao/andar/walk_Left_Up.png')
+andar_left_down = image.load('Animacoes_movimentacao/andar/walk_Left_Down.png')
 
-andar_right_up = image.load('walk_Right_Up.png')
-andar_right_down = image.load('walk_Right_Down.png')
+andar_right_up = image.load('Animacoes_movimentacao/andar/walk_Right_Up.png')
+andar_right_down = image.load('Animacoes_movimentacao/andar/walk_Right_Down.png')
 
-pulo_up = image.load('Jump_Up.png')
-pulo_down = image.load('Jump_Down.png')
-pulo_left = image.load('Jump_Left_Down.png')
-pulo_right = image.load('Jump_Right_Down.png')
+pulo_up = image.load('Animacoes_movimentacao/pular/Jump_Up.png')
+pulo_down = image.load('Animacoes_movimentacao/pular/Jump_Down.png')
+pulo_left = image.load('Animacoes_movimentacao/pular/Jump_Left_Down.png')
+pulo_right = image.load('Animacoes_movimentacao/pular/Jump_Right_Down.png')
 
-morrer_up = image.load('Death_Up.png')
-morrer_down = image.load('Death_Down.png')
+morrer_up = image.load('Animacoes_movimentacao/morrer/Death_Up.png')
+morrer_down = image.load('Animacoes_movimentacao/morrer/Death_Down.png')
 
 # Variáveis
 
