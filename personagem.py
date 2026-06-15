@@ -76,7 +76,7 @@ while True:
             if ev.key == K_SPACE:
                 pular = True
                 vel_y = -16
-            if ev.key == K_v:
+            if ev.key == K_v: # Só pra testar 
                 vidas -= 1
 
     clock.tick(60)
