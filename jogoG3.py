@@ -136,6 +136,18 @@ for item in posicoes_objetos:
             lista_colliders.append(obj_collider)
             break
 
+#OBJETOS ANIMADOS
+#load das imagens
+door_animada = image.load('modern interior usando/escola/animated_door_big_4_32x32.png')
+
+#variáveis:
+frame_atual_porta1 = 0
+frame_atual_porta2 = 0
+
+anim_time_porta1= 0
+porta1 = True
+abrirPorta1 = False
+fecharPorta1 = False
 
 #MOVIMENTAÇÃO PERSONAGEM
 # Load das imagens
@@ -226,6 +238,8 @@ while True:
                 vel_y = -16
             if ev.key == K_v:
                 vidas -= 1
+            if ev.key == K_o:
+                abrirPorta1 = True
 
     clock.tick(60)
     dt = clock.get_time()
@@ -238,6 +252,7 @@ while True:
     chaves_andar_down = keys[K_s]
     chaves_andar_left = keys[K_a]
     chaves_andar_right = keys[K_d]
+    
 
     if vidas <= 0:
         morrer = True
@@ -260,7 +275,7 @@ while True:
             frame_atual_pulo = 0
 
     
-
+    window.fill((0,0,0))
     #MAPA ESCOLA
     for i in range(len(mapa1)):
         for j in range(len(mapa1[i])):
@@ -296,10 +311,47 @@ while True:
     window.blit(obj['cad_tras'],(152,250))
     window.blit(obj['cad_tras'],(184,250))
     
+    anim_time_porta1 += dt
+    anim_time_porta1_set = anim_time_porta1 / 1000
+
+
+    if (12<pos_x<50 and 275<pos_y<320):
+        abrirPorta1 = True
+        porta1 = False
+    else:
+         abrirPorta1 = False
+         porta1 = True 
+
+    if porta1 == True:
+        window.blit(door_animada, (64,288),(0,0,32,96))
+    if abrirPorta1 == True:
+        porta1 = False
+        if anim_time_porta1_set> 0.5:
+            frame_atual_porta1 += 1
+            if frame_atual_porta1 > 5:
+                frame_atual_porta1 = 5
+                if (frame_atual_porta1 == 5 and 12<pos_x<50 and 275<pos_y<320):
+                    fecharPorta1 = True
+            anim_time_porta1 = 0
+
+        window.blit(door_animada, (64,288),((frame_atual_porta1 *32),0, 32, 96))
     
+    if fecharPorta1 == True:
+        porta1 = False
+        if anim_time_porta1_set>0.5:
+            frame_atual_porta1 -= 1
+            if frame_atual_porta1 < 1:
+                frame_atual_porta1 = 0
+                porta1 = True
+            anim_time_porta1 = 0
+
+        window.blit(door_animada, (64,288),((frame_atual_porta1 *32),0, 32, 96))
+        fecharPorta1 = False
+    
+
     #APAGAR DPS
     # for colisor in lista_colliders:
-    #     draw.rect(window, (255, 0, 0), colisor, 2)
+    #    draw.rect(window, (255, 0, 0), colisor, 2)
     
 
     
@@ -429,7 +481,7 @@ while True:
             window.blit(idle_down, (pos_x, pos_y), ((frame_atual_idle * 96), 0, 96, 128))
     
     player_collider = Rect(pos_x+40,pos_y +65,20,20)
-    #draw.rect(window, (0,255,0), player_collider, 2)
+    draw.rect(window, (0,255,0), player_collider, 2)
     for colisor in lista_colliders:
             if player_collider.colliderect(colisor):
                 pos_x = old_pos_x
