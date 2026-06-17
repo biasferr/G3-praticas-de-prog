@@ -18,6 +18,7 @@ window = display.set_mode((1056,624))
 clock = time.Clock()
 
 #MAPA 1
+mapa_escola = False
 arq_mapa1 = open ('mapa1.txt', 'r')
 mapa1 = []  
 
@@ -59,21 +60,21 @@ blocos_escola = {
 
 #OBJETOS ESCOLA
 #sala 1
-caminho_obj = 'modern interior usando/escola/5_Classroom_and_Library_Black_Shadow_Singles_32x32/Classroom_and_Library_Singles_32x32_'
+caminho_objt_mapa1 = 'modern interior usando/escola/5_Classroom_and_Library_Black_Shadow_Singles_32x32/Classroom_and_Library_Singles_32x32_'
 caminho_morto = 'modern interior usando/mortos/Hospital_Singles_Shadowless_32x32_'
 garoto_morto = image.load(f'{caminho_morto}516.png')
 
-obj= {
-    'quadro': image.load(f'{caminho_obj}36.png'), 'anotacao': image.load(f'{caminho_obj}33.png'),
-    'estante': image.load(f'{caminho_obj}57.png'), 'janela': image.load(f'modern interior usando/Room_Bulder_subfiles_32x32/1_Generic_Black_Shadow_32x32.png'),
-    'cad_frente': image.load(f'{caminho_obj}1.png'), 'mesa_prof_frente': image.load(f'{caminho_obj}25.png'),
-    'cart_vazia': image.load(f'{caminho_obj}6.png'),'cart_casa': image.load(f'{caminho_obj}8.png'),
-    'cart_papel': image.load(f'{caminho_obj}10.png'),'cart_livro': image.load(f'{caminho_obj}12.png'),
-    'cad_tras': image.load(f'{caminho_obj}2.png'),'cart_estojo_lado': image.load(f'{caminho_obj}22.png'),
-    'carteira_com_livro_lado':  image.load(f'{caminho_obj}24.png'),'cart_vazia_lado':  image.load(f'{caminho_obj}20.png'),
-    'mesa_prof_lado':  image.load(f'{caminho_obj}29.png'),'mapa_mundi':  image.load(f'{caminho_obj}31.png'),
-    'globo':  image.load(f'{caminho_obj}35.png'), 'quadro_lado': image.load(f'{caminho_obj}37.png'), 
-    'armario': image.load(f'{caminho_obj}40.png'), 'estante2': image.load(f'{caminho_obj}69.png'), 
+objt_mapa1= {
+    'quadro': image.load(f'{caminho_objt_mapa1}36.png'), 'anotacao': image.load(f'{caminho_objt_mapa1}33.png'),
+    'estante': image.load(f'{caminho_objt_mapa1}57.png'), 'janela': image.load(f'modern interior usando/Room_Bulder_subfiles_32x32/1_Generic_Black_Shadow_32x32.png'),
+    'cad_frente': image.load(f'{caminho_objt_mapa1}1.png'), 'mesa_prof_frente': image.load(f'{caminho_objt_mapa1}25.png'),
+    'cart_vazia': image.load(f'{caminho_objt_mapa1}6.png'),'cart_casa': image.load(f'{caminho_objt_mapa1}8.png'),
+    'cart_papel': image.load(f'{caminho_objt_mapa1}10.png'),'cart_livro': image.load(f'{caminho_objt_mapa1}12.png'),
+    'cad_tras': image.load(f'{caminho_objt_mapa1}2.png'),'cart_estojo_lado': image.load(f'{caminho_objt_mapa1}22.png'),
+    'carteira_com_livro_lado':  image.load(f'{caminho_objt_mapa1}24.png'),'cart_vazia_lado':  image.load(f'{caminho_objt_mapa1}20.png'),
+    'mesa_prof_lado':  image.load(f'{caminho_objt_mapa1}29.png'),'mapa_mundi':  image.load(f'{caminho_objt_mapa1}31.png'),
+    'globo':  image.load(f'{caminho_objt_mapa1}35.png'), 'quadro_lado': image.load(f'{caminho_objt_mapa1}37.png'), 
+    'armario': image.load(f'{caminho_objt_mapa1}40.png'), 'estante2': image.load(f'{caminho_objt_mapa1}69.png'), 
     'placa': image.load('modern interior usando/genericos/Museum_Black_Shadow_Singles_32x32_27.png'),
     #mortos
     #'morto_coberto_sangue': image.load(f'{caminho_morto}518.png'), 'idosa_coberta': image.load(f'{caminho_morto}513.png'),
@@ -87,27 +88,27 @@ obj= {
 
 
 janela_crop = (267, 1548, 72, 52)
-posicoes_objetos = [
-    (obj['estante'], (32, 40)), (obj['quadro'], (120, 32)), (obj['anotacao'], (180, 50)),
-    (obj['janela'], (245, 43), janela_crop), (obj['cad_frente'], (290, 82)), (obj['mesa_prof_frente'], (160, 96)),
-    (obj['cart_casa'], (88, 154)), (obj['cart_vazia'], (120, 154)), (obj['cart_papel'], (152, 154)),
-    (obj['cart_livro'], (216, 154)), (obj['cart_vazia'], (32, 186)), (obj['cart_vazia'], (32, 218)),
-    (obj['cart_papel'], (120, 218)), (obj['cart_casa'], (152, 218)), (obj['cart_vazia'], (184, 218)),
-    (obj['cart_vazia'], (32, 250)), (obj['cart_vazia'], (290, 250)),
+posicoes_objetos_mapa1 = [
+    (objt_mapa1['estante'], (32, 40)), (objt_mapa1['quadro'], (120, 32)), (objt_mapa1['anotacao'], (180, 50)),
+    (objt_mapa1['janela'], (245, 43), janela_crop), (objt_mapa1['cad_frente'], (290, 82)), (objt_mapa1['mesa_prof_frente'], (160, 96)),
+    (objt_mapa1['cart_casa'], (88, 154)), (objt_mapa1['cart_vazia'], (120, 154)), (objt_mapa1['cart_papel'], (152, 154)),
+    (objt_mapa1['cart_livro'], (216, 154)), (objt_mapa1['cart_vazia'], (32, 186)), (objt_mapa1['cart_vazia'], (32, 218)),
+    (objt_mapa1['cart_papel'], (120, 218)), (objt_mapa1['cart_casa'], (152, 218)), (objt_mapa1['cart_vazia'], (184, 218)),
+    (objt_mapa1['cart_vazia'], (32, 250)), (objt_mapa1['cart_vazia'], (290, 250)),
     #sala2
-    (obj['poça de sangue 2'],(500,250)), (obj['janela'], (500, 140), janela_crop), (obj['mapa_mundi'], (590, 140)), (obj['mesa_prof_lado'],(600,200)), 
-    (obj['quadro_lado'], (655,200)), (obj['cart_vazia_lado'],(505,240)), (obj['carteira_com_livro_lado'],(505,195)),
-    (obj['cart_vazia_lado'],(420,195)),(obj['cart_estojo_lado'],(420,240)), (obj['armario'],(130,335)), (obj['armario'],(162,335)),
-    (obj['armario'],(194,335)), (obj['armario'],(226,335)), (obj['estante2'],(258,335)), (obj['armario'],(322,335)), (obj['armario'],(354,335)), (obj['globo'],(600,180)),
-    (obj['armario'],(550,335)),(obj['estante'],(582,335)),# (obj['morto_coberto_sangue'],(90,110)),
-    (obj['placa'],(420,420)), (obj['poça de sangue 1'],(320,440)),(obj['poça de sangue 2'],(120,415)), #(obj['idosa_coberta'],(120,400)),
-    (obj['cerebro'],(650,380)), (obj['poça de sangue 1'],(210,96)),(obj['poça de sangue 2'],(282,220)) ,#(obj['garoto_morto'],(250,200)),
-    (obj['poça de sangue 1'],(590,290)),(obj['cerebro'],(280,285)),(obj['poça de sangue 1'],(650,460)),
-    #(obj['homem_morto'],(650,440))
+    (objt_mapa1['poça de sangue 2'],(500,250)), (objt_mapa1['janela'], (500, 140), janela_crop), (objt_mapa1['mapa_mundi'], (590, 140)), (objt_mapa1['mesa_prof_lado'],(600,200)), 
+    (objt_mapa1['quadro_lado'], (655,200)), (objt_mapa1['cart_vazia_lado'],(505,240)), (objt_mapa1['carteira_com_livro_lado'],(505,195)),
+    (objt_mapa1['cart_vazia_lado'],(420,195)),(objt_mapa1['cart_estojo_lado'],(420,240)), (objt_mapa1['armario'],(130,335)), (objt_mapa1['armario'],(162,335)),
+    (objt_mapa1['armario'],(194,335)), (objt_mapa1['armario'],(226,335)), (objt_mapa1['estante2'],(258,335)), (objt_mapa1['armario'],(322,335)), (objt_mapa1['armario'],(354,335)), (objt_mapa1['globo'],(600,180)),
+    (objt_mapa1['armario'],(550,335)),(objt_mapa1['estante'],(582,335)),# (objt_mapa1['morto_coberto_sangue'],(90,110)),
+    (objt_mapa1['placa'],(420,420)), (objt_mapa1['poça de sangue 1'],(320,440)),(objt_mapa1['poça de sangue 2'],(120,415)), #(objt_mapa1['idosa_coberta'],(120,400)),
+    (objt_mapa1['cerebro'],(650,380)), (objt_mapa1['poça de sangue 1'],(210,96)),(objt_mapa1['poça de sangue 2'],(282,220)) ,#(objt_mapa1['garoto_morto'],(250,200)),
+    (objt_mapa1['poça de sangue 1'],(590,290)),(objt_mapa1['cerebro'],(280,285)),(objt_mapa1['poça de sangue 1'],(650,460)),
+    #(objt_mapa1['homem_morto'],(650,440))
     ]
 
 
-lista_colliders = []
+lista_coliders_mapa1 = []
 for i in range(len(mapa1)):
     for j in range(len(mapa1[i])):
         tile = mapa1[i][j]
@@ -115,25 +116,25 @@ for i in range(len(mapa1)):
         if 'p' in tile or tile == 'f' or tile in ['be', 'bd', 'cse', 'csd', 'cie', 'cid', 'bi']:
             # Cria um retângulo na posição exata do tile
             novo_collider = Rect(tilesize * j, tilesize * i, tilesize, tilesize)
-            lista_colliders.append(novo_collider)
+            lista_coliders_mapa1.append(novo_collider)
 
-objetos_com_colisao = [
+objetos_com_colisao_mapa1 = [
     'cad_frente', 'cart_casa', 
     'cart_vazia', 'cart_papel', 'cart_livro', 'cad_tras', 'cart_estojo_lado', 
     'carteira_com_livro_lado', 'cart_vazia_lado', 'armario','placa','mesa_prof_lado','mesa_prof_frente'
 ]
 
-for item in posicoes_objetos:
+for item in posicoes_objetos_mapa1:
     imagem = item[0]
     posicao = item[1]
     
-    for nome, img in obj.items():
-        if img == imagem and nome in objetos_com_colisao:
+    for nome, img in objt_mapa1.items():
+        if img == imagem and nome in objetos_com_colisao_mapa1:
             largura = imagem.get_width()
             altura = imagem.get_height()
             
-            obj_collider = Rect(posicao[0], posicao[1], largura, altura)
-            lista_colliders.append(obj_collider)
+            objt_collider_mapa1 = Rect(posicao[0], posicao[1], largura, altura)
+            lista_coliders_mapa1.append(objt_collider_mapa1)
             break
 
 #OBJETOS ANIMADOS
@@ -148,6 +149,41 @@ anim_time_porta1= 0
 porta1 = True
 abrirPorta1 = False
 fecharPorta1 = False
+
+
+#MAPA 2
+arq_mapa2 = open ('mapa2.txt', 'r')
+mapa2 = []
+
+mapa_supermercado = True
+
+geraMapa(arq_mapa2,mapa2)
+
+blocos_supermercado = {
+    'cse': (192,192),
+    'csd': (256,192),
+    'be': (192,224),
+    'bd': (256,224),
+    'cie': (192,256),
+    'cid': (256,256),
+    'bi': (224,256),
+    'pbs': (736,640),
+    'pi':(736,672),
+    'fcse1': (0,192),
+    'fbs1': (32,192),
+    'fbe1': (0,224),
+    'floor1': (32,224),
+    'pbes': (704,640),
+    'pbds': (768,640),
+    'pbei': (704,672),
+    'pbdi': (768,672),
+    'cursd': (128,192)
+    
+}
+
+
+
+
 
 #MOVIMENTAÇÃO PERSONAGEM
 # Load das imagens
@@ -274,85 +310,73 @@ while True:
             vel_y = 0
             frame_atual_pulo = 0
 
-    
-    window.fill((0,0,0))
-    #MAPA ESCOLA
-    for i in range(len(mapa1)):
-        for j in range(len(mapa1[i])):
-            tile = mapa1[i][j]
+    if mapa_escola == True:
+        window.fill((0,0,0))
+        #MAPA ESCOLA
+        for i in range(len(mapa1)):
+            for j in range(len(mapa1[i])):
+                tile = mapa1[i][j]
 
-            coordenada_escola = blocos_escola.get(tile)
-            if tile == 'f':
-                draw.rect(window,(0,0,0),(tilesize*j, tilesize*i, tilesize, tilesize))
+                coordenada_escola = blocos_escola.get(tile)
+                if tile == 'f':
+                    draw.rect(window,(0,0,0),(tilesize*j, tilesize*i, tilesize, tilesize))
 
-            elif 'p' in tile:
-                if coordenada_escola:
-                    window.blit(tileset_parede,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-            elif 'f' in tile:
-                if coordenada_escola:
-                    window.blit(tileset_floor,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-       
+                elif 'p' in tile:
+                    if coordenada_escola:
+                        window.blit(tileset_parede,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
+                elif 'f' in tile:
+                    if coordenada_escola:
+                        window.blit(tileset_floor,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
+        
+                else:
+                    if coordenada_escola:
+                        window.blit(tileset_bordas,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
+        
+        
+        #OBJETOS ESCOLA
+        for item in posicoes_objetos_mapa1:
+            if len(item) == 3: 
+                window.blit(item[0], item[1], item[2])
             else:
-                if coordenada_escola:
-                    window.blit(tileset_bordas,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-    
-    
-    #OBJETOS ESCOLA
-    for item in posicoes_objetos:
-        if len(item) == 3: 
-            window.blit(item[0], item[1], item[2])
-        else:
-            window.blit(item[0], item[1])
-    
-    window.blit(obj['cad_tras'],(88,186))
-    window.blit(obj['cad_tras'],(152,186))
-    window.blit(obj['cad_tras'],(216,186))
-    window.blit(obj['cad_tras'],(120,250))
-    window.blit(obj['cad_tras'],(152,250))
-    window.blit(obj['cad_tras'],(184,250))
-    
+                window.blit(item[0], item[1])
+        
+        window.blit(objt_mapa1['cad_tras'],(88,186))
+        window.blit(objt_mapa1['cad_tras'],(152,186))
+        window.blit(objt_mapa1['cad_tras'],(216,186))
+        window.blit(objt_mapa1['cad_tras'],(120,250))
+        window.blit(objt_mapa1['cad_tras'],(152,250))
+        window.blit(objt_mapa1['cad_tras'],(184,250))
+
+    #MAPA 2
+    if mapa_supermercado == True:
+        window.fill((0,0,0))
+        #MAPA SUPERMERCADO
+        for i in range(len(mapa2)):
+            for j in range(len(mapa2[i])):
+                tile = mapa2[i][j]
+
+                coordenada_supermercado = blocos_supermercado.get(tile)
+                if tile == 'f':
+                    draw.rect(window,(0,0,0),(tilesize*j, tilesize*i, tilesize, tilesize))
+
+                elif 'p' in tile:
+                    if coordenada_supermercado:
+                        window.blit(tileset_parede,(tilesize * j , tilesize*i),(coordenada_supermercado[0],coordenada_supermercado[1],tilesize,tilesize))           
+                elif 'f' in tile:
+                    if coordenada_supermercado:
+                        window.blit(tileset_floor,(tilesize * j , tilesize*i),(coordenada_supermercado[0],coordenada_supermercado[1],tilesize,tilesize))           
+        
+                else:
+                    if coordenada_supermercado:
+                        window.blit(tileset_bordas,(tilesize * j , tilesize*i),(coordenada_supermercado[0],coordenada_supermercado[1],tilesize,tilesize))
+
+
+
     anim_time_porta1 += dt
     anim_time_porta1_set = anim_time_porta1 / 1000
 
 
-    if (12<pos_x<50 and 275<pos_y<320):
-        abrirPorta1 = True
-        porta1 = False
-    else:
-         abrirPorta1 = False
-         porta1 = True 
 
-    if porta1 == True:
-        window.blit(door_animada, (64,288),(0,0,32,96))
-    if abrirPorta1 == True:
-        porta1 = False
-        if anim_time_porta1_set> 0.5:
-            frame_atual_porta1 += 1
-            if frame_atual_porta1 > 5:
-                frame_atual_porta1 = 5
-                if (frame_atual_porta1 == 5 and 12<pos_x<50 and 275<pos_y<320):
-                    fecharPorta1 = True
-            anim_time_porta1 = 0
-
-        window.blit(door_animada, (64,288),((frame_atual_porta1 *32),0, 32, 96))
-    
-    if fecharPorta1 == True:
-        porta1 = False
-        if anim_time_porta1_set>0.5:
-            frame_atual_porta1 -= 1
-            if frame_atual_porta1 < 1:
-                frame_atual_porta1 = 0
-                porta1 = True
-            anim_time_porta1 = 0
-
-        window.blit(door_animada, (64,288),((frame_atual_porta1 *32),0, 32, 96))
-        fecharPorta1 = False
-    
-
-    #APAGAR DPS
-    # for colisor in lista_colliders:
-    #    draw.rect(window, (255, 0, 0), colisor, 2)
-    
 
     
     anim_time_idle += dt
@@ -479,12 +503,41 @@ while True:
             window.blit(idle_up, (pos_x, pos_y), ((frame_atual_idle * 96), 0, 96, 128))
         else:
             window.blit(idle_down, (pos_x, pos_y), ((frame_atual_idle * 96), 0, 96, 128))
-    
+
     player_collider = Rect(pos_x+40,pos_y +65,20,20)
-    draw.rect(window, (0,255,0), player_collider, 2)
-    for colisor in lista_colliders:
+
+    if mapa_escola == True:
+        player_perto_p1 = (12 < pos_x < 100 and 250 < pos_y < 350) 
+        
+
+        if player_perto_p1:
+        
+            if anim_time_porta1_set > 0.1: 
+                if frame_atual_porta1 < 5:
+                    frame_atual_porta1 += 1
+                anim_time_porta1 = 0
+        else:
+
+            if anim_time_porta1_set > 0.1:
+                if frame_atual_porta1 > 0:
+                    frame_atual_porta1 -= 1
+                anim_time_porta1 = 0
+
+
+
+        window.blit(door_animada, (64, 288), ((frame_atual_porta1 * 32), 0, 32, 96)) 
+
+        for colisor in lista_coliders_mapa1:
             if player_collider.colliderect(colisor):
                 pos_x = old_pos_x
                 pos_y = old_pos_y
+
+        
+    
+
+    
+
+    draw.rect(window, (0,255,0), player_collider, 2)
+    
 
     display.update()
