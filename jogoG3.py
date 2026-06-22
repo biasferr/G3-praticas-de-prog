@@ -67,7 +67,7 @@ clock = time.Clock()
 
 #TELA DE INICIO!
 background = image.load('city background.png')
-telaDeInicio = True
+telaDeInicio = False
 settings = image.load('ui/Setting menu.png')
 
 #gasolina
@@ -225,7 +225,7 @@ fecharPorta1 = False
 arq_mapa2 = open ('mapa2.txt', 'r')
 mapa2 = []
 
-mapa_supermercado = False
+mapa_supermercado = True
 
 geraMapa(arq_mapa2,mapa2)
 
@@ -259,8 +259,69 @@ blocos_supermercado = {
     
 }
 
+#OBJETOS MERCADO
+caminho_açougue = 'modern interior usando/supermercado/açougue/Grocery_Store_Black_Shadow_Singles_32x32_'
+caminho_mercado = 'modern interior usando/supermercado/Grocery_Store_Black_Shadow_Singles_32x32_'
+
+objt_mapa2= {
+    'ralo':image.load(f'{caminho_açougue}327.png'),'gancho1': image.load(f'{caminho_açougue}319.png'),
+    'gancho2':image.load(f'{caminho_açougue}322.png'),'gancho3':image.load(f'{caminho_açougue}321.png'),
+    'carne1': image.load(f'{caminho_açougue}314.png'),'carne2': image.load(f'{caminho_açougue}316.png'),
+    'carne3': image.load(f'{caminho_açougue}317.png'), 'carne4': image.load(f'{caminho_açougue}318.png'),
+    'mesaAcougue1': image.load(f'{caminho_açougue}331.png'), 'mesaAcougue2': image.load(f'{caminho_açougue}332.png'),
+    'geladeira1': image.load(f'{caminho_mercado}57.png'),'geladeira2': image.load(f'{caminho_mercado}64.png'),
+    'carrinho': image.load(f'{caminho_mercado}36.png'), 'caixa_esquerda': image.load(f'{caminho_mercado}168.png'),
+    'caixa_direita': image.load(f'{caminho_mercado}159.png'), 'prateleira_be': image.load(f'{caminho_mercado}76.png'),
+    'prateleira_bd': image.load(f'{caminho_mercado}78.png'),'comida_prat1': image.load(f'{caminho_mercado}102.png'),
+    'comida_prat2': image.load(f'{caminho_mercado}101.png'),'comida_prat3': image.load(f'{caminho_mercado}100.png'),
+    'prateleira_lado': image.load(f'{caminho_mercado}114.png'),'janela_pequena': image.load(f'{caminho_mercado}156.png'),
+    'janela_grande': image.load(f'{caminho_mercado}157.png'),'freezer': image.load(f'{caminho_mercado}148.png'),
+    'caixa_frente1': image.load(f'{caminho_mercado}170.png'),'caixa_frente2': image.load(f'{caminho_mercado}173.png'),
+    'geladeira_costas': image.load(f'modern interior usando/supermercado/Grocery_Store_Singles_Shadowless_32x32_255.png'),
+    'detector_le': image.load(f'{caminho_mercado}153.png'),'detector_ld': image.load(f'{caminho_mercado}152.png'),
+    'detector_ld': image.load(f'{caminho_mercado}152.png'),'cesto_v1': image.load(f'{caminho_mercado}350.png'),
+    'cesto_v2': image.load(f'{caminho_mercado}352.png'),'cesto_v3': image.load(f'{caminho_mercado}354.png'),
+    'cesto_b1': image.load(f'{caminho_mercado}355.png'),'cesto_b2': image.load(f'{caminho_mercado}357.png'),'cenouras': image.load(f'{caminho_mercado}369.png'),
+    'rosa': image.load(f'{caminho_mercado}365.png'),'morangos': image.load(f'{caminho_mercado}362.png'),
+    'ervilhas': image.load(f'{caminho_mercado}358.png'),'bananas': image.load(f'{caminho_mercado}367.png'),
 
 
+
+}
+
+posicoes_objetos_mapa2 = [
+    (objt_mapa2['ralo'], (160, 96)),(objt_mapa2['ralo'], (160, 150)),(objt_mapa2['ralo'], (288, 150)),
+    (objt_mapa2['gancho1'], (128, 50)),(objt_mapa2['gancho3'], (160, 50)),(objt_mapa2['gancho2'], (192, 50)),
+    (objt_mapa2['gancho2'], (224, 50)),(objt_mapa2['gancho3'], (256, 50)),(objt_mapa2['gancho2'], (288, 50)),
+    (objt_mapa2['gancho2'], (320, 50)),(objt_mapa2['gancho3'], (352, 50)),(objt_mapa2['gancho3'], (384, 50)),
+    (objt_mapa2['gancho3'], (416, 50)),(objt_mapa2['carne1'], (128, 50)),(objt_mapa2['carne2'], (160, 50)),
+    (objt_mapa2['carne4'], (192, 50)),(objt_mapa2['carne3'], (224, 50)),(objt_mapa2['carne2'], (256, 50)),
+    (objt_mapa2['carne3'], (320, 50)),(objt_mapa2['carne1'], (352, 50)),(objt_mapa2['carne4'], (416, 50)),
+    (objt_mapa2['mesaAcougue1'], (368, 160)),(objt_mapa2['mesaAcougue2'], (384, 145)),(objt_mapa2['janela_grande'], (32, 205)),
+    (objt_mapa2['janela_pequena'], (92, 205)),(objt_mapa2['geladeira1'], (64, 192)),(objt_mapa2['geladeira2'], (128, 192)),
+    (objt_mapa2['janela_pequena'], (320, 205)),(objt_mapa2['janela_grande'], (384, 205)),(objt_mapa2['janela_grande'], (480, 205)),
+    (objt_mapa2['prateleira_be'], (336, 192)),(objt_mapa2['comida_prat1'], (352, 192)),(objt_mapa2['prateleira_bd'], (384, 192)),
+    (objt_mapa2['prateleira_be'], (400, 192)),(objt_mapa2['comida_prat2'], (416, 192)),(objt_mapa2['prateleira_bd'], (448, 192)),
+    (objt_mapa2['freezer'], (512, 224)),(objt_mapa2['geladeira_costas'], (64, 352)),(objt_mapa2['geladeira_costas'], (128, 352)),
+    (objt_mapa2['prateleira_be'], (304, 288)), (objt_mapa2['comida_prat3'], (320, 288)),(objt_mapa2['comida_prat1'], (352, 288)),
+    (objt_mapa2['comida_prat2'], (384, 288)),(objt_mapa2['prateleira_bd'], (416, 288)),(objt_mapa2['prateleira_lado'], (432, 278)),
+    (objt_mapa2['carrinho'], (228, 370)), (objt_mapa2['caixa_esquerda'], (228, 448)),(objt_mapa2['caixa_direita'], (416, 448)),
+    (objt_mapa2['detector_le'], (288, 540)),(objt_mapa2['detector_ld'], (352, 540)),(objt_mapa2['janela_grande'], (600, 270)),
+    (objt_mapa2['janela_pequena'], (680, 270)), (objt_mapa2['janela_grande'], (780, 270)),(objt_mapa2['janela_grande'], (880, 270)),
+    (objt_mapa2['cesto_v1'], (780, 290)),(objt_mapa2['cesto_v2'], (812, 292)),(objt_mapa2['rosa'], (812, 290)),(objt_mapa2['cesto_v3'], (844, 292)),
+    (objt_mapa2['bananas'], (844, 292)),(objt_mapa2['cesto_b1'], (780, 380)),(objt_mapa2['cesto_b2'], (812, 380)),
+    (objt_mapa2['cenouras'], (780, 364)),(objt_mapa2['morangos'], (812, 380)),(objt_mapa2['cesto_b1'], (894, 380)),
+    (objt_mapa2['ervilhas'], (894, 380)),(objt_mapa2['cesto_b2'], (926, 380)),(objt_mapa2['cenouras'], (926, 364)),
+    (objt_mapa2['cesto_b2'], (812, 440)),(objt_mapa2['cesto_b1'], (780, 440))
+
+    
+    
+    
+    
+    
+    
+    
+]
 
 
 #MOVIMENTAÇÃO PERSONAGEM
@@ -437,7 +498,12 @@ while True:
                 else:
                     if coordenada_supermercado:
                         window.blit(tileset_bordas,(tilesize * j , tilesize*i),(coordenada_supermercado[0],coordenada_supermercado[1],tilesize,tilesize))
-
+        
+        for item in posicoes_objetos_mapa2:
+            if len(item) == 3: 
+                window.blit(item[0], item[1], item[2])
+            else:
+                window.blit(item[0], item[1])
 
 
     anim_time_porta1 += dt
