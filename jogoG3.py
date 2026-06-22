@@ -76,9 +76,6 @@ objt_mapa1= {
     'globo':  image.load(f'{caminho_objt_mapa1}35.png'), 'quadro_lado': image.load(f'{caminho_objt_mapa1}37.png'), 
     'armario': image.load(f'{caminho_objt_mapa1}40.png'), 'estante2': image.load(f'{caminho_objt_mapa1}69.png'), 
     'placa': image.load('modern interior usando/genericos/Museum_Black_Shadow_Singles_32x32_27.png'),
-    #mortos
-    #'morto_coberto_sangue': image.load(f'{caminho_morto}518.png'), 'idosa_coberta': image.load(f'{caminho_morto}513.png'),
-    #sangue
     'poça de sangue 1': image.load('modern interior usando/mortos/sangue/Halloween_Shadow_Singles_32x32_79.png'),
     'poça de sangue 2': image.load('modern interior usando/mortos/sangue/Halloween_Shadow_Singles_32x32_80.png'),
     'cerebro':  image.load('modern interior usando/mortos/sangue/Halloween_Shadow_Singles_32x32_209.png'),
@@ -114,7 +111,6 @@ for i in range(len(mapa1)):
         tile = mapa1[i][j]
         
         if 'p' in tile or tile == 'f' or tile in ['be', 'bd', 'cse', 'csd', 'cie', 'cid', 'bi']:
-            # Cria um retângulo na posição exata do tile
             novo_collider = Rect(tilesize * j, tilesize * i, tilesize, tilesize)
             lista_coliders_mapa1.append(novo_collider)
 
@@ -177,7 +173,15 @@ blocos_supermercado = {
     'pbds': (768,640),
     'pbei': (704,672),
     'pbdi': (768,672),
-    'cursd': (128,192)
+    'cursd': (128,192),
+    'floor2': (32,160),
+    'curse': (160,192),
+    'fcse3': (128,64),
+    'fbs3': (160,64),
+    'fbe3': (128,96),
+    'floor3':(160,96),
+    'pbs2': (32,64),
+    'pi2': (32,96)
     
 }
 
@@ -537,7 +541,7 @@ while True:
 
     
 
-    draw.rect(window, (0,255,0), player_collider, 2)
+    # draw.rect(window, (0,255,0), player_collider, 2)
     
 
     display.update()
