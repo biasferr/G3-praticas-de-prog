@@ -12,10 +12,84 @@ def mudaEscala(animacao):
     animacao = transform.scale(animacao,(768,128))
     return animacao
 
+def desenha_mapa1():
+    window.fill((0,0,0))
+        #MAPA ESCOLA
+    for i in range(len(mapa1)):
+        for j in range(len(mapa1[i])):
+            tile = mapa1[i][j]
+
+            coordenada_escola = blocos_escola.get(tile)
+            if tile == 'f':
+                draw.rect(window,(0,0,0),(tilesize*j, tilesize*i, tilesize, tilesize))
+
+            elif 'p' in tile:
+                if coordenada_escola:
+                    window.blit(tileset_parede,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
+            elif 'f' in tile:
+                if coordenada_escola:
+                    window.blit(tileset_floor,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
+    
+            else:
+                if coordenada_escola:
+                    window.blit(tileset_bordas,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
+    
+    
+    
+
+
+
+    #OBJETOS ESCOLA
+    for item in posicoes_objetos_mapa1:
+        if len(item) == 3: 
+            window.blit(item[0], item[1], item[2])
+        else:
+            window.blit(item[0], item[1])
+    
+    window.blit(objt_mapa1['cad_tras'],(88,186))
+    window.blit(objt_mapa1['cad_tras'],(152,186))
+    window.blit(objt_mapa1['cad_tras'],(216,186))
+    window.blit(objt_mapa1['cad_tras'],(120,250))
+    window.blit(objt_mapa1['cad_tras'],(152,250))
+    window.blit(objt_mapa1['cad_tras'],(184,250))
+
+
+def desenha_telaInicio():
+    window.blit(background,(0,0))
+    window.blit(settings,(400,300))
+    
+
+
 
 init()
 window = display.set_mode((1056,624))
 clock = time.Clock()
+
+#TELA DE INICIO!
+background = image.load('city background.png')
+telaDeInicio = True
+settings = image.load('ui/Setting menu.png')
+
+#gasolina
+gascan_rodando = [
+    image.load('objectss/gas can rotations/west.png'),
+    image.load('objectss/gas can rotations/south-east.png'),
+    image.load('objectss/gas can rotations/south-west.png'),
+    image.load('objectss/gas can rotations/east.png'),
+    image.load('objectss/gas can rotations/north-west.png')]
+
+gascan_desaparecendo= [
+    image.load('objectss/gas can desaparecendo/gas can1.png'),
+    image.load('objectss/gas can desaparecendo/gas can 2.png'),
+    image.load('objectss/gas can desaparecendo/gas can 3.png')
+]
+
+frame_atual_gascan_girando = 0
+anim_time_gascan = 0
+
+frame_atual_gascan_desaparecendo = 0
+
+gasolina = True
 
 #MAPA 1
 mapa_escola = False
@@ -151,7 +225,7 @@ fecharPorta1 = False
 arq_mapa2 = open ('mapa2.txt', 'r')
 mapa2 = []
 
-mapa_supermercado = True
+mapa_supermercado = False
 
 geraMapa(arq_mapa2,mapa2)
 
@@ -314,42 +388,32 @@ while True:
             vel_y = 0
             frame_atual_pulo = 0
 
+    if telaDeInicio == True:
+        desenha_telaInicio()
+
     if mapa_escola == True:
-        window.fill((0,0,0))
-        #MAPA ESCOLA
-        for i in range(len(mapa1)):
-            for j in range(len(mapa1[i])):
-                tile = mapa1[i][j]
+        desenha_mapa1()
+        # desenha_gasolina(gascan_rodando,frame_atual_gascan_girando,anim_time_gascan)
+        anim_time_gascan += dt
+        anim_time_set = anim_time_gascan/1000
 
-                coordenada_escola = blocos_escola.get(tile)
-                if tile == 'f':
-                    draw.rect(window,(0,0,0),(tilesize*j, tilesize*i, tilesize, tilesize))
+        # if gasolina == True:
+        #     if anim_time_set>0.3:
+        #         frame_atual_gascan_desaparecendo +=1
+        #         if frame_atual_gascan_desaparecendo > len(gascan_desaparecendo):
+        #             gasolina = False
+        #             frame_atual_gascan_desaparecendo = 0
+        #         anim_time_gascan = 0
+        #     window.blit(gascan_desaparecendo[frame_atual_gascan_desaparecendo],(800,400))
+                
 
-                elif 'p' in tile:
-                    if coordenada_escola:
-                        window.blit(tileset_parede,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-                elif 'f' in tile:
-                    if coordenada_escola:
-                        window.blit(tileset_floor,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-        
-                else:
-                    if coordenada_escola:
-                        window.blit(tileset_bordas,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-        
-        
-        #OBJETOS ESCOLA
-        for item in posicoes_objetos_mapa1:
-            if len(item) == 3: 
-                window.blit(item[0], item[1], item[2])
-            else:
-                window.blit(item[0], item[1])
-        
-        window.blit(objt_mapa1['cad_tras'],(88,186))
-        window.blit(objt_mapa1['cad_tras'],(152,186))
-        window.blit(objt_mapa1['cad_tras'],(216,186))
-        window.blit(objt_mapa1['cad_tras'],(120,250))
-        window.blit(objt_mapa1['cad_tras'],(152,250))
-        window.blit(objt_mapa1['cad_tras'],(184,250))
+
+        if anim_time_set > 0.3:
+            frame_atual_gascan_girando += 1
+            if frame_atual_gascan_girando > len(gascan_rodando)-1:
+                frame_atual_gascan_girando = 0
+            anim_time_gascan = 0
+        window.blit(gascan_rodando[frame_atual_gascan_girando],(800,400))
 
     #MAPA 2
     if mapa_supermercado == True:
@@ -378,9 +442,6 @@ while True:
 
     anim_time_porta1 += dt
     anim_time_porta1_set = anim_time_porta1 / 1000
-
-
-
 
     
     anim_time_idle += dt
