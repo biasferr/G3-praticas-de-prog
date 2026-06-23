@@ -1,58 +1,114 @@
 from pygame import *
 import sys
 
+#VARIAVEIS
+tile_size = 32
+frame_largura = 96
+frame_altura = 128
+tiles_solidos= {'be', 'bd', 'cse', 'csd', 'cie', 'cid', 'bi', 'curse', 'cursd'}
+posicoes_cadeira_escola = [(88, 186), (152, 186), (216, 186), (120, 250), (152, 250), (184, 250)]
 
-def geraMapa(mapa,listaMapa):
+#FUNCOES
+def geraMapa(mapa, listaMapa):
     for linha in mapa:
         linha_limpa = linha.strip()
         linha_mapa = linha_limpa.split(',')
         listaMapa.append(linha_mapa)
 
+
+def carrega_mapa(caminho):
+    mapa = []
+    with open(caminho, 'r') as arquivo:
+        geraMapa(arquivo, mapa)
+    return mapa
+
+
 def mudaEscala(animacao):
-    animacao = transform.scale(animacao,(768,128))
-    return animacao
-
-def desenha_mapa1():
-    window.fill((0,0,0))
-        #MAPA ESCOLA
-    for i in range(len(mapa1)):
-        for j in range(len(mapa1[i])):
-            tile = mapa1[i][j]
-
-            coordenada_escola = blocos_escola.get(tile)
-            if tile == 'f':
-                draw.rect(window,(0,0,0),(tilesize*j, tilesize*i, tilesize, tilesize))
-
-            elif 'p' in tile:
-                if coordenada_escola:
-                    window.blit(tileset_parede,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-            elif 'f' in tile:
-                if coordenada_escola:
-                    window.blit(tileset_floor,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-    
-            else:
-                if coordenada_escola:
-                    window.blit(tileset_bordas,(tilesize * j , tilesize*i),(coordenada_escola[0],coordenada_escola[1],tilesize,tilesize))           
-    
-    
-    
+    return transform.scale(animacao, (768, 128))
 
 
-
-    #OBJETOS ESCOLA
-    for item in posicoes_objetos_mapa1:
-        if len(item) == 3: 
+def desenha_objetos(posicoes_objetos):
+    for item in posicoes_objetos:
+        if len(item) == 3:
             window.blit(item[0], item[1], item[2])
         else:
             window.blit(item[0], item[1])
-    
-    window.blit(objt_mapa1['cad_tras'],(88,186))
-    window.blit(objt_mapa1['cad_tras'],(152,186))
-    window.blit(objt_mapa1['cad_tras'],(216,186))
-    window.blit(objt_mapa1['cad_tras'],(120,250))
-    window.blit(objt_mapa1['cad_tras'],(152,250))
-    window.blit(objt_mapa1['cad_tras'],(184,250))
 
+
+def desenha_mapa(mapa, blocos, posicoes_objetos):
+    window.fill((0, 0, 0))
+
+    for i in range (len(mapa)):
+        for j in range(len(mapa[i])):
+            tile = mapa[i][j]
+            coordenada = blocos.get(tile)
+            x = tile_size * j
+            y = tile_size * i
+            area = (x, y, tile_size, tile_size)
+
+            if tile == 'f':
+                draw.rect(window, (0, 0, 0), area)
+            elif 'p' in tile and coordenada:
+                window.blit(tileset_parede, (x, y), (coordenada[0], coordenada[1], tile_size, tile_size))
+            elif 'f' in tile and coordenada:
+                window.blit(tileset_floor, (x, y), (coordenada[0], coordenada[1], tile_size, tile_size))
+            elif coordenada:
+                window.blit(tileset_bordas, (x, y), (coordenada[0], coordenada[1], tile_size, tile_size))
+
+    desenha_objetos(posicoes_objetos)
+
+
+
+
+def desenha_mapa1():
+    desenha_mapa(mapa1, blocos_escola, posicoes_objetos_mapa1)
+
+
+def desenha_mapa2():
+    desenha_mapa(mapa2, blocos_supermercado, posicoes_objetos_mapa2)
+
+
+def constroi_coliders(mapa, posicoes_objetos, objetos_com_colisao, objetos):
+    coliders = []
+
+    for i in range(len(mapa)):
+        for j in range(len(mapa[i])):
+            tile= mapa[i][j]
+            if 'p' in tile or tile == 'f' or tile in tiles_solidos:
+                coliders.append(Rect(tile_size * j, tile_size * i, tile_size, tile_size))
+
+    for item in posicoes_objetos:
+        imagem, posicao = item[0], item[1]
+        for nome, img in objetos.items():
+            if img == imagem and nome in objetos_com_colisao:
+                coliders.append(Rect(posicao[0], posicao[1], imagem.get_width(), imagem.get_height()))
+                break
+
+    return coliders
+
+
+def avanca_frame(anim_time, frame_atual, dt, intervalo, max_frame):
+    anim_time += dt
+    
+    if anim_time / 1000 > intervalo:
+        frame_atual += 1
+        
+        if frame_atual > max_frame:
+            frame_atual = 0
+        anim_time = 0
+    return anim_time, frame_atual
+
+
+def desenha_frame_anim(spritesheet, x, y, frame,mov_y):
+    window.blit(
+        spritesheet,
+        (x, y +mov_y),
+        (frame * frame_largura, 0, frame_largura, frame_altura),
+    )
+
+
+def colidiu_com_algum(player_collider, coliders):
+    return any(player_collider.colliderect(colisor) for colisor in coliders)
 
 def desenha_telaInicio():
     window.blit(background,(0,0))
@@ -92,18 +148,14 @@ frame_atual_gascan_desaparecendo = 0
 gasolina = True
 
 #MAPA 1
-mapa_escola = False
-arq_mapa1 = open ('mapa1.txt', 'r')
-mapa1 = []  
+mapa_escola = True
+mapa1 = carrega_mapa('mapa1.txt')
 
 tileset_parede = image.load('modern interior usando/Room_Bulder_subfiles_32x32/Room_Builder_Walls_32x32.png')
 tileset_bordas = image.load('modern interior usando/Room_Bulder_subfiles_32x32/Room_Builder_borders_32x32.png')
 tileset_floor = image.load('modern interior usando/Room_Bulder_subfiles_32x32/Room_Builder_floors_32x32.png')
 
-tilesize = 32
-
-geraMapa(arq_mapa1,mapa1)
-
+tilesize = tile_size
 
 blocos_escola = {
     'cse': (192,192),
@@ -153,7 +205,7 @@ objt_mapa1= {
     'poça de sangue 1': image.load('modern interior usando/mortos/sangue/Halloween_Shadow_Singles_32x32_79.png'),
     'poça de sangue 2': image.load('modern interior usando/mortos/sangue/Halloween_Shadow_Singles_32x32_80.png'),
     'cerebro':  image.load('modern interior usando/mortos/sangue/Halloween_Shadow_Singles_32x32_209.png'),
-    'garoto_morto': transform.flip(garoto_morto, True, True), 'homem_morto': image.load(f'{caminho_morto}510.png')
+
 }
 
 
@@ -171,41 +223,26 @@ posicoes_objetos_mapa1 = [
     (objt_mapa1['quadro_lado'], (655,200)), (objt_mapa1['cart_vazia_lado'],(505,240)), (objt_mapa1['carteira_com_livro_lado'],(505,195)),
     (objt_mapa1['cart_vazia_lado'],(420,195)),(objt_mapa1['cart_estojo_lado'],(420,240)), (objt_mapa1['armario'],(130,335)), (objt_mapa1['armario'],(162,335)),
     (objt_mapa1['armario'],(194,335)), (objt_mapa1['armario'],(226,335)), (objt_mapa1['estante2'],(258,335)), (objt_mapa1['armario'],(322,335)), (objt_mapa1['armario'],(354,335)), (objt_mapa1['globo'],(600,180)),
-    (objt_mapa1['armario'],(550,335)),(objt_mapa1['estante'],(582,335)),# (objt_mapa1['morto_coberto_sangue'],(90,110)),
-    (objt_mapa1['placa'],(420,420)), (objt_mapa1['poça de sangue 1'],(320,440)),(objt_mapa1['poça de sangue 2'],(120,415)), #(objt_mapa1['idosa_coberta'],(120,400)),
-    (objt_mapa1['cerebro'],(650,380)), (objt_mapa1['poça de sangue 1'],(210,96)),(objt_mapa1['poça de sangue 2'],(282,220)) ,#(objt_mapa1['garoto_morto'],(250,200)),
+    (objt_mapa1['armario'],(550,335)),(objt_mapa1['estante'],(582,335)),
+    (objt_mapa1['placa'],(420,420)), (objt_mapa1['poça de sangue 1'],(320,440)),(objt_mapa1['poça de sangue 2'],(120,415)),
+    (objt_mapa1['cerebro'],(650,380)), (objt_mapa1['poça de sangue 1'],(210,96)),(objt_mapa1['poça de sangue 2'],(282,220)) ,
     (objt_mapa1['poça de sangue 1'],(590,290)),(objt_mapa1['cerebro'],(280,285)),(objt_mapa1['poça de sangue 1'],(650,460)),
-    #(objt_mapa1['homem_morto'],(650,440))
+    (objt_mapa1['cad_tras'],(88,186)),(objt_mapa1['cad_tras'],(152,186)),(objt_mapa1['cad_tras'],(216,186)),(objt_mapa1['cad_tras'],(120,250)),
+    (objt_mapa1['cad_tras'],(152,250)),(objt_mapa1['cad_tras'],(184,250))
+    
     ]
 
 
-lista_coliders_mapa1 = []
-for i in range(len(mapa1)):
-    for j in range(len(mapa1[i])):
-        tile = mapa1[i][j]
-        
-        if 'p' in tile or tile == 'f' or tile in ['be', 'bd', 'cse', 'csd', 'cie', 'cid', 'bi']:
-            novo_collider = Rect(tilesize * j, tilesize * i, tilesize, tilesize)
-            lista_coliders_mapa1.append(novo_collider)
 
 objetos_com_colisao_mapa1 = [
-    'cad_frente', 'cart_casa', 
-    'cart_vazia', 'cart_papel', 'cart_livro', 'cad_tras', 'cart_estojo_lado', 
-    'carteira_com_livro_lado', 'cart_vazia_lado', 'armario','placa','mesa_prof_lado','mesa_prof_frente'
+    'cad_frente', 'cart_casa',
+    'cart_vazia', 'cart_papel', 'cart_livro', 'cad_tras', 'cart_estojo_lado',
+    'carteira_com_livro_lado', 'cart_vazia_lado', 'armario', 'placa', 'mesa_prof_lado', 'mesa_prof_frente'
 ]
 
-for item in posicoes_objetos_mapa1:
-    imagem = item[0]
-    posicao = item[1]
-    
-    for nome, img in objt_mapa1.items():
-        if img == imagem and nome in objetos_com_colisao_mapa1:
-            largura = imagem.get_width()
-            altura = imagem.get_height()
-            
-            objt_collider_mapa1 = Rect(posicao[0], posicao[1], largura, altura)
-            lista_coliders_mapa1.append(objt_collider_mapa1)
-            break
+lista_coliders_mapa1 = constroi_coliders(
+    mapa1, posicoes_objetos_mapa1, objetos_com_colisao_mapa1, objt_mapa1
+)
 
 #OBJETOS ANIMADOS
 #load das imagens
@@ -222,12 +259,10 @@ fecharPorta1 = False
 
 
 #MAPA 2
-arq_mapa2 = open ('mapa2.txt', 'r')
-mapa2 = []
+mapa2 = carrega_mapa('mapa2.txt')
 
-mapa_supermercado = True
-
-geraMapa(arq_mapa2,mapa2)
+mapa_supermercado = False
+spawn_supermercado_pendente = True
 
 blocos_supermercado = {
     'cse': (192,192),
@@ -279,7 +314,7 @@ objt_mapa2= {
     'caixa_frente1': image.load(f'{caminho_mercado}170.png'),'caixa_frente2': image.load(f'{caminho_mercado}173.png'),
     'geladeira_costas': image.load(f'modern interior usando/supermercado/Grocery_Store_Singles_Shadowless_32x32_255.png'),
     'detector_le': image.load(f'{caminho_mercado}153.png'),'detector_ld': image.load(f'{caminho_mercado}152.png'),
-    'detector_ld': image.load(f'{caminho_mercado}152.png'),'cesto_v1': image.load(f'{caminho_mercado}350.png'),
+    'cesto_v1': image.load(f'{caminho_mercado}350.png'),
     'cesto_v2': image.load(f'{caminho_mercado}352.png'),'cesto_v3': image.load(f'{caminho_mercado}354.png'),
     'cesto_b1': image.load(f'{caminho_mercado}355.png'),'cesto_b2': image.load(f'{caminho_mercado}357.png'),'cenouras': image.load(f'{caminho_mercado}369.png'),
     'rosa': image.load(f'{caminho_mercado}365.png'),'morangos': image.load(f'{caminho_mercado}362.png'),
@@ -312,17 +347,20 @@ posicoes_objetos_mapa2 = [
     (objt_mapa2['bananas'], (844, 292)),(objt_mapa2['cesto_b1'], (780, 380)),(objt_mapa2['cesto_b2'], (812, 380)),
     (objt_mapa2['cenouras'], (780, 364)),(objt_mapa2['morangos'], (812, 380)),(objt_mapa2['cesto_b1'], (894, 380)),
     (objt_mapa2['ervilhas'], (894, 380)),(objt_mapa2['cesto_b2'], (926, 380)),(objt_mapa2['cenouras'], (926, 364)),
-    (objt_mapa2['cesto_b2'], (812, 440)),(objt_mapa2['cesto_b1'], (780, 440))
-
-    
-    
-    
-    
-    
-    
-    
+    (objt_mapa2['cesto_b2'], (812, 440)),(objt_mapa2['cesto_b1'], (780, 440)) 
 ]
 
+
+#COLIDERS
+objetos_com_colisao_mapa2 = [
+    'mesaAcougue1', 'mesaAcougue2', 'geladeira1', 'geladeira2', 'geladeira_costas',
+    'prateleira_be', 'prateleira_bd', 'comida_prat1', 'comida_prat2', 'comida_prat3', 'carrinho', 'caixa_esquerda',
+    'caixa_direita', 'cesto_v1', 'cesto_v2', 'cesto_v3', 'cesto_b1', 'cesto_b2', 'prateleira_lado'
+]
+
+lista_coliders_mapa2 = constroi_coliders(
+    mapa2, posicoes_objetos_mapa2, objetos_com_colisao_mapa2, objt_mapa2
+)
 
 #MOVIMENTAÇÃO PERSONAGEM
 # Load das imagens
@@ -455,185 +493,88 @@ while True:
     if mapa_escola == True:
         desenha_mapa1()
         # desenha_gasolina(gascan_rodando,frame_atual_gascan_girando,anim_time_gascan)
-        anim_time_gascan += dt
-        anim_time_set = anim_time_gascan/1000
-
-        # if gasolina == True:
-        #     if anim_time_set>0.3:
-        #         frame_atual_gascan_desaparecendo +=1
-        #         if frame_atual_gascan_desaparecendo > len(gascan_desaparecendo):
-        #             gasolina = False
-        #             frame_atual_gascan_desaparecendo = 0
-        #         anim_time_gascan = 0
-        #     window.blit(gascan_desaparecendo[frame_atual_gascan_desaparecendo],(800,400))
-                
-
-
-        if anim_time_set > 0.3:
-            frame_atual_gascan_girando += 1
-            if frame_atual_gascan_girando > len(gascan_rodando)-1:
-                frame_atual_gascan_girando = 0
-            anim_time_gascan = 0
-        window.blit(gascan_rodando[frame_atual_gascan_girando],(800,400))
+        anim_time_gascan, frame_atual_gascan_girando = avanca_frame(
+            anim_time_gascan, frame_atual_gascan_girando, dt, 0.3, len(gascan_rodando) - 1
+        )
+        window.blit(gascan_rodando[frame_atual_gascan_girando], (800, 400))
 
     #MAPA 2
     if mapa_supermercado == True:
-        window.fill((0,0,0))
-        #MAPA SUPERMERCADO
-        for i in range(len(mapa2)):
-            for j in range(len(mapa2[i])):
-                tile = mapa2[i][j]
+        if spawn_supermercado_pendente:
+            pos_x = 300
+            pos_y = 550
+            spawn_supermercado_pendente = False
 
-                coordenada_supermercado = blocos_supermercado.get(tile)
-                if tile == 'f':
-                    draw.rect(window,(0,0,0),(tilesize*j, tilesize*i, tilesize, tilesize))
+        desenha_mapa2()
 
-                elif 'p' in tile:
-                    if coordenada_supermercado:
-                        window.blit(tileset_parede,(tilesize * j , tilesize*i),(coordenada_supermercado[0],coordenada_supermercado[1],tilesize,tilesize))           
-                elif 'f' in tile:
-                    if coordenada_supermercado:
-                        window.blit(tileset_floor,(tilesize * j , tilesize*i),(coordenada_supermercado[0],coordenada_supermercado[1],tilesize,tilesize))           
         
-                else:
-                    if coordenada_supermercado:
-                        window.blit(tileset_bordas,(tilesize * j , tilesize*i),(coordenada_supermercado[0],coordenada_supermercado[1],tilesize,tilesize))
-        
-        for item in posicoes_objetos_mapa2:
-            if len(item) == 3: 
-                window.blit(item[0], item[1], item[2])
-            else:
-                window.blit(item[0], item[1])
 
 
     anim_time_porta1 += dt
     anim_time_porta1_set = anim_time_porta1 / 1000
-
-    
     anim_time_idle += dt
-    anim_time_idle_set = anim_time_idle / 1000
 
 
     if morrer == True:
-
-        anim_time_morrer += dt
-        anim_time_morrer_set = anim_time_morrer / 1000
-
-        if anim_time_morrer_set > 0.1:
-            frame_atual_morrer += 1
-            if frame_atual_morrer > 7:
-                frame_atual_morrer = 7
-            anim_time_morrer = 0
-
-        if direcao_vertical == "up":
-            window.blit(morrer_up, (pos_x, pos_y), ((frame_atual_morrer * 96), 0, 96, 128))
-        else:
-            window.blit(morrer_down, (pos_x, pos_y), ((frame_atual_morrer * 96), 0, 96, 128))
+        anim_time_morrer, frame_atual_morrer = avanca_frame(
+            anim_time_morrer, frame_atual_morrer, dt, 0.1, 7, reiniciar=False
+        )
+        sprite_morrer = morrer_up if direcao_vertical == "up" else morrer_down
+        desenha_frame_anim(sprite_morrer, pos_x, pos_y, frame_atual_morrer,0)
 
     elif chaves_andar_up == True:
         direcao_vertical = "up"
         pos_y -= velocidade * (dt/100)
-
-        anim_time_walkUp += dt
-        anim_time_walkUp_set = anim_time_walkUp / 1000
-
-        if anim_time_walkUp_set > 0.15:
-            frame_atual_walkUp += 1
-            if frame_atual_walkUp > 7:
-                frame_atual_walkUp = 0
-            anim_time_walkUp = 0
-
-        window.blit(andar_up, (pos_x, pos_y + altura_pulo), ((frame_atual_walkUp * 96), 0, 96, 128))
-
+        anim_time_walkUp, frame_atual_walkUp = avanca_frame(
+            anim_time_walkUp, frame_atual_walkUp, dt, 0.15, 7
+        )
+        desenha_frame_anim(andar_up, pos_x, pos_y, frame_atual_walkUp, altura_pulo)
 
     elif chaves_andar_down == True:
         direcao_vertical = "down"
         pos_y += velocidade * (dt/100)
-
-        anim_time_walkDown += dt
-        anim_time_walkDown_set = anim_time_walkDown / 1000
-
-        if anim_time_walkDown_set > 0.15:
-            frame_atual_walkDown += 1
-            if frame_atual_walkDown > 7:
-                frame_atual_walkDown = 0
-            anim_time_walkDown = 0
-
-        window.blit(andar_down, (pos_x, pos_y + altura_pulo), ((frame_atual_walkDown * 96), 0, 96, 128))
-
+        anim_time_walkDown, frame_atual_walkDown = avanca_frame(
+            anim_time_walkDown, frame_atual_walkDown, dt, 0.15, 7
+        )
+        desenha_frame_anim(andar_down, pos_x, pos_y, frame_atual_walkDown, altura_pulo)
 
     elif chaves_andar_left == True:
         direcao = "left"
         pos_x -= velocidade * (dt/100)
-
-        anim_time_walkLeft += dt
-        anim_time_walkLeft_set = anim_time_walkLeft / 1000
-
-        if anim_time_walkLeft_set > 0.15:
-            frame_atual_walkLeft += 1
-            if frame_atual_walkLeft > 7:
-                frame_atual_walkLeft = 0
-            anim_time_walkLeft = 0
-
-        if direcao_vertical == "up":
-            window.blit(andar_left_up, (pos_x, pos_y + altura_pulo), ((frame_atual_walkLeft * 96), 0, 96, 128))
-        else:
-            window.blit(andar_left_down, (pos_x, pos_y + altura_pulo), ((frame_atual_walkLeft * 96), 0, 96, 128))
-
+        anim_time_walkLeft, frame_atual_walkLeft = avanca_frame(
+            anim_time_walkLeft, frame_atual_walkLeft, dt, 0.15, 7
+        )
+        sprite_andar = andar_left_up if direcao_vertical == "up" else andar_left_down
+        desenha_frame_anim(sprite_andar, pos_x, pos_y, frame_atual_walkLeft, altura_pulo)
 
     elif chaves_andar_right == True:
         direcao = "right"
         pos_x += velocidade * (dt/100)
-
-        anim_time_walkRight += dt
-        anim_time_walkRight_set = anim_time_walkRight / 1000
-
-        if anim_time_walkRight_set > 0.15:
-            frame_atual_walkRight += 1
-            if frame_atual_walkRight > 7:
-                frame_atual_walkRight = 0
-            anim_time_walkRight = 0
-
-        if direcao_vertical == "up":
-            window.blit(andar_right_up, (pos_x, pos_y + altura_pulo), ((frame_atual_walkRight * 96), 0, 96, 128))
-        else:
-            window.blit(andar_right_down, (pos_x, pos_y + altura_pulo), ((frame_atual_walkRight * 96), 0, 96, 128))
-
+        anim_time_walkRight, frame_atual_walkRight = avanca_frame(
+            anim_time_walkRight, frame_atual_walkRight, dt, 0.15, 7
+        )
+        sprite_andar = andar_right_up if direcao_vertical == "up" else andar_right_down
+        desenha_frame_anim(sprite_andar, pos_x, pos_y, frame_atual_walkRight, altura_pulo)
 
     elif pular == True:
-        anim_time_pulo += dt
-        anim_time_pulo_set = anim_time_pulo / 1000
-
-        if anim_time_pulo_set > 0.09:
-            frame_atual_pulo += 1
-            if frame_atual_pulo > 7:
-                frame_atual_pulo = 0
-            anim_time_pulo = 0
-
+        anim_time_pulo, frame_atual_pulo = avanca_frame(
+            anim_time_pulo, frame_atual_pulo, dt, 0.09, 7
+        )
         if direcao == "left":
-            window.blit(pulo_left, (pos_x, pos_y + altura_pulo), ((frame_atual_pulo * 96), 0, 96, 128))
-
+            desenha_frame_anim(pulo_left, pos_x, pos_y, frame_atual_pulo, altura_pulo)
         elif direcao == "right":
-            window.blit(pulo_right, (pos_x, pos_y + altura_pulo), ((frame_atual_pulo * 96), 0, 96, 128))
-
+            desenha_frame_anim(pulo_right, pos_x, pos_y, frame_atual_pulo, altura_pulo)
         elif direcao_vertical == "up":
-            window.blit(pulo_up, (pos_x, pos_y + altura_pulo), ((frame_atual_pulo * 96), 0, 96, 128))
-
+            desenha_frame_anim(pulo_up, pos_x, pos_y, frame_atual_pulo, altura_pulo)
         else:
-            window.blit(pulo_down, (pos_x, pos_y + altura_pulo), ((frame_atual_pulo * 96), 0, 96, 128))
-
+            desenha_frame_anim(pulo_down, pos_x, pos_y, frame_atual_pulo, altura_pulo)
 
     else:
-        if anim_time_idle_set > 0.15:
-            frame_atual_idle += 1
-            if frame_atual_idle > 7:
-                frame_atual_idle = 0
-            anim_time_idle = 0
-
-        if direcao_vertical == "up":
-            window.blit(idle_up, (pos_x, pos_y), ((frame_atual_idle * 96), 0, 96, 128))
-        else:
-            window.blit(idle_down, (pos_x, pos_y), ((frame_atual_idle * 96), 0, 96, 128))
+        anim_time_idle, frame_atual_idle = avanca_frame(
+            anim_time_idle, frame_atual_idle, dt, 0.15, 7
+        )
+        sprite_idle = idle_up if direcao_vertical == "up" else idle_down
+        desenha_frame_anim(sprite_idle, pos_x, pos_y, frame_atual_idle,0)
 
     player_collider = Rect(pos_x+40,pos_y +65,20,20)
 
@@ -656,18 +597,16 @@ while True:
 
 
 
-        window.blit(door_animada, (64, 288), ((frame_atual_porta1 * 32), 0, 32, 96)) 
+        window.blit(door_animada, (64, 288), ((frame_atual_porta1 * 32), 0, 32, 96))
 
-        for colisor in lista_coliders_mapa1:
-            if player_collider.colliderect(colisor):
-                pos_x = old_pos_x
-                pos_y = old_pos_y
+        if colidiu_com_algum(player_collider, lista_coliders_mapa1):
+            pos_x = old_pos_x
+            pos_y = old_pos_y
 
-        
-    
-
-    
-
+    if mapa_supermercado == True:
+        if colidiu_com_algum(player_collider, lista_coliders_mapa2):
+            pos_x = old_pos_x
+            pos_y = old_pos_y
     # draw.rect(window, (0,255,0), player_collider, 2)
     
 
