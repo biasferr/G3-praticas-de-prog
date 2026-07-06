@@ -44,6 +44,12 @@ zumbi_walk_up = image.load('Zombie/walk_up_zombie_spritesheet.png')
 zumbi_walk_left = image.load('Zombie/walk_left_zombie_spritesheet.png')
 zumbi_walk_right = image.load('Zombie/walk_right_zombie_spritesheet.png')
 
+
+zumbi_attack_down = image.load('attack_down_zombie_spritesheet.png')
+zumbi_attack_up = image.load('attack_up_zombie_spritesheet.png')
+zumbi_attack_left = image.load('attack_left_zombie_spritesheet.png')
+zumbi_attack_right = image.load('attack_right_zombie_spritesheet.png')
+
 # Variáveis
 
 frame_atual_idle = 0
@@ -99,6 +105,11 @@ velocidade_zumbi = 5
 andar_zumbi = False
 frame_atual_zumbi_walk = 0
 anim_time_zumbi_walk = 0
+
+atacar_zumbi = False 
+frame_atual_zumbi_atacar = 0
+anim_time_zumbi_atacar = 0
+
 
 direcao_vertical_zumbi = "down"
 direcao_zumbi = 'right'
@@ -160,19 +171,27 @@ while True:
     # Mecanismos zumbi 
     distancia_x_zumbi = pos_x - zumbi_x
     distancia_y_zumbi = pos_y - zumbi_y
-
+        
     if abs(distancia_x_zumbi) < 250 and abs(distancia_y_zumbi) < 250:
-        if abs(distancia_x_zumbi) > 35 or abs(distancia_y_zumbi) > 35:
+
+        if abs(distancia_x_zumbi) >20 or abs(distancia_y_zumbi) > 20:
             andar_zumbi = True
+            atacar_zumbi = False
         else:
             andar_zumbi = False
+            if atacar_zumbi == False:
+                atacar_zumbi = True
+                frame_atual_zumbi_atacar = 0
+                anim_time_zumbi_atacar = 0
     else:
         andar_zumbi = False
+        atacar_zumbi = False
 
+        
     if pos_x > zumbi_x:
         direcao_zumbi = "right"
     elif pos_x < zumbi_x:
-        direcao_zumbi = "left"
+            direcao_zumbi = "left"
 
     if pos_y > zumbi_y:
         direcao_vertical_zumbi = "down"
@@ -338,7 +357,36 @@ while True:
     anim_time_zumbi_idle += dt
     anim_time_zumbi_idle_set = anim_time_zumbi_idle / 1000
 
-    if andar_zumbi == True:
+    if atacar_zumbi == True:
+        anim_time_zumbi_atacar += dt
+        anim_time_zumbi_atacar_set = anim_time_zumbi_atacar / 1000
+
+        if anim_time_zumbi_atacar_set > 0.1:
+            frame_atual_zumbi_atacar += 1
+
+            if frame_atual_zumbi_atacar > 8:
+                frame_atual_zumbi_atacar = 0
+
+            anim_time_zumbi_atacar = 0
+
+        if abs(pos_x - zumbi_x) > abs(pos_y - zumbi_y):
+
+            if direcao_zumbi == "left":
+                window.blit(zumbi_attack_left, (zumbi_x, zumbi_y), ((frame_atual_zumbi_atacar * 64), 0, 64, 64))
+
+            else:
+                window.blit(zumbi_attack_right, (zumbi_x, zumbi_y), ((frame_atual_zumbi_atacar * 64), 0, 64, 64))
+
+        else:
+
+            if direcao_vertical_zumbi == "up":
+                window.blit(zumbi_attack_up, (zumbi_x, zumbi_y), ((frame_atual_zumbi_atacar * 64), 0, 64, 64))
+
+            else:
+                window.blit(zumbi_attack_down, (zumbi_x, zumbi_y), ((frame_atual_zumbi_atacar * 64), 0, 64, 64))
+
+
+    elif andar_zumbi == True:
 
         anim_time_zumbi_walk += dt
         anim_time_zumbi_walk_set = anim_time_zumbi_walk / 1000
