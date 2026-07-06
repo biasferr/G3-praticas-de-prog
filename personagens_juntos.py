@@ -7,42 +7,42 @@ window = display.set_mode((720,624))
 
 # Load das imagens
 
-idle_up = image.load('Idle_Spear_Up.png')
-idle_down = image.load('Idle_Spear_Down.png')
+idle_up = image.load('personagem- lanca/Idle_Spear_Up.png')
+idle_down = image.load('personagem- lanca/Idle_Spear_Down.png')
 
-andar_up = image.load('walk_Spear_Up.png')
-andar_down = image.load('walk_Spear_Down.png')
+andar_up = image.load('personagem- lanca/walk_Spear_Up.png')
+andar_down = image.load('personagem- lanca/walk_Spear_Down.png')
 
-andar_left_up = image.load('walk_Spear_Left_Up.png')
-andar_left_down = image.load('walk_Spear_Left_Down.png')
+andar_left_up = image.load('personagem- lanca/walk_Spear_Left_Up.png')
+andar_left_down = image.load('personagem- lanca/walk_Spear_Left_Down.png')
 
-andar_right_up = image.load('walk_Spear_Right_Up.png')
-andar_right_down = image.load('walk_Spear_Right_Down.png')
+andar_right_up = image.load('personagem- lanca/walk_Spear_Right_Up.png')
+andar_right_down = image.load('personagem- lanca/walk_Spear_Right_Down.png')
 
-pulo_up = image.load('Jump_spear_Up.png')
-pulo_down = image.load('Jump_Spear_Down.png')
-pulo_left = image.load('Jump_Spear_Left_Down.png')
-pulo_right = image.load('Jump_Spear_Right_Down.png')
+pulo_up = image.load('personagem- lanca/Jump_spear_Up.png')
+pulo_down = image.load('personagem- lanca/Jump_Spear_Down.png')
+pulo_left = image.load('personagem- lanca/Jump_Spear_Left_Down.png')
+pulo_right = image.load('personagem- lanca/Jump_Spear_Right_Down.png')
 
-morrer_up = image.load('death_Spear_Up.png')
-morrer_down = image.load('death_Spear_Down.png')
+morrer_up = image.load('personagem- lanca/death_Spear_Up.png')
+morrer_down = image.load('personagem- lanca/death_Spear_Down.png')
 
-ataque_left_up = image.load('Attack_Spear_Left_Up.png')
-ataque_left_down = image.load('Attack_Spear_Left_Down.png')
+ataque_left_up = image.load('personagem- lanca/Attack_Spear_Left_Up.png')
+ataque_left_down = image.load('personagem- lanca/Attack_Spear_Left_Down.png')
 
-ataque_right_up = image.load('Attack_Spear_Right_Up.png')
-ataque_right_down = image.load('Attack_Spear_Right_Down.png')
+ataque_right_up = image.load('personagem- lanca/Attack_Spear_Right_Up.png')
+ataque_right_down = image.load('personagem- lanca/Attack_Spear_Right_Down.png')
 
 
 # Zumbi 
 
-zumbi_idle_down = image.load('idle_down_zombie_spritesheet.png')
-zumbi_idle_up = image.load('idle_up_zombie_spritesheet.png')
+zumbi_idle_down = image.load('Zombie/idle_down_zombie_spritesheet.png')
+zumbi_idle_up = image.load('Zombie/idle_up_zombie_spritesheet.png')
 
-zumbi_walk_down = image.load('walk_down_zombie_spritesheet.png')
-zumbi_walk_up = image.load('walk_up_zombie_spritesheet.png')
-zumbi_walk_left = image.load('walk_left_zombie_spritesheet.png')
-zumbi_walk_right = image.load('walk_right_zombie_spritesheet.png')
+zumbi_walk_down = image.load('Zombie/walk_down_zombie_spritesheet.png')
+zumbi_walk_up = image.load('Zombie/walk_up_zombie_spritesheet.png')
+zumbi_walk_left = image.load('Zombie/walk_left_zombie_spritesheet.png')
+zumbi_walk_right = image.load('Zombie/walk_right_zombie_spritesheet.png')
 
 # Variáveis
 
