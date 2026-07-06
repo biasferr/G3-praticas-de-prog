@@ -168,6 +168,12 @@ frame_atual_gascan_desaparecendo = 0
 
 gasolina = True
 
+posicoes_gasolinas_escola = posicoes_gasolinas_escola = [
+    Rect(800, 400, 32, 32),
+    Rect(100, 100, 32, 32),#sala1
+    Rect(600, 260, 32, 32),#sala2
+    Rect(350, 410, 32, 32)
+]
 #MAPA 1
 mapa_escola = False
 mapa1 = carrega_mapa('mapa1.txt')
@@ -468,6 +474,7 @@ while True:
     meu_mouse = mouse.get_pos()
     bt_play= Rect(475,250,150,50)
     bt_sair= Rect(475,330,150,50)
+    
     for ev in event.get():
         if ev.type == QUIT:
             quit()
@@ -489,7 +496,6 @@ while True:
                     quit()
                     sys.exit()
 
-
     clock.tick(60)
     dt = clock.get_time()
     keys = key.get_pressed()
@@ -502,7 +508,6 @@ while True:
     chaves_andar_left = keys[K_a]
     chaves_andar_right = keys[K_d]
     
-
     if vidas <= 0:
         morrer = True
 
@@ -526,36 +531,83 @@ while True:
     if tela_de_inicio == True:
         desenha_telaInicio()
 
-    if mapa_escola == True:
-        desenha_mapa1()
-        # desenha_gasolina(gascan_rodando,frame_atual_gascan_girando,anim_time_gascan)
-        anim_time_gascan, frame_atual_gascan_girando = avanca_frame(
-            anim_time_gascan, frame_atual_gascan_girando, dt, 0.3, len(gascan_rodando) - 1
-        )
-        window.blit(gascan_rodando[frame_atual_gascan_girando], (800, 400))
 
-    #MAPA 2
-    if mapa_supermercado == True:
-        if spawn_supermercado_pendente:
-            pos_x = 300
-            pos_y = 550
-            spawn_supermercado_pendente = False
+    if tela_de_inicio == False and tela_final == False and morrer == False:
+        if chaves_andar_up:
+            pos_y -= velocidade * (dt/100)
+        elif chaves_andar_down:
+            pos_y += velocidade * (dt/100)
+        elif chaves_andar_left:
+            pos_x -= velocidade * (dt/100)
+        elif chaves_andar_right:
+            pos_x += velocidade * (dt/100)
 
-        desenha_mapa2()
+
+    player_collider = Rect(pos_x + 40, pos_y + 65, 20, 20)
+
+   
+    if tela_de_inicio == False and tela_final == False:
+        #ESCOLA
+        if mapa_escola == True:
+            desenha_mapa1()
+            
+            anim_time_gascan, frame_atual_gascan_girando = avanca_frame(
+                anim_time_gascan, frame_atual_gascan_girando, dt, 0.3, len(gascan_rodando) - 1
+            )
+            
+            
+            gasolinas_restantes = []
+            for gas_rect in posicoes_gasolinas_escola:
+                if player_collider.colliderect(gas_rect):
+                    #ADICIONAR PONTUAÇAO
+                    continue 
+                window.blit(gascan_rodando[frame_atual_gascan_girando], (gas_rect.x, gas_rect.y))
+                gasolinas_restantes.append(gas_rect)
+            posicoes_gasolinas_escola = gasolinas_restantes
+
+            #PORTA ABRINDO
+            player_perto_p1 = (12 < pos_x < 100 and 250 < pos_y < 350)
+            anim_time_porta1 += dt
+            anim_time_porta1_set = anim_time_porta1 / 1000
+            
+            if player_perto_p1:
+                if anim_time_porta1_set > 0.1: 
+                    if frame_atual_porta1 < 5:
+                        frame_atual_porta1 += 1
+                    anim_time_porta1 = 0
+            else:
+                if anim_time_porta1_set > 0.1:
+                    if frame_atual_porta1 > 0:
+                        frame_atual_porta1 -= 1
+                    anim_time_porta1 = 0
+
+            window.blit(door_animada, (64, 288), ((frame_atual_porta1 * 32), 0, 32, 96))
+
+            # Colisão Escola
+            if colidiu_com_algum(player_collider, lista_coliders_mapa1):
+                pos_x = old_pos_x
+                pos_y = old_pos_y
+
+       #MERCADO
+        if mapa_supermercado == True:
+            if spawn_supermercado_pendente:
+                pos_x = 300
+                pos_y = 550
+                spawn_supermercado_pendente = False
+
+            desenha_mapa2()
+            
+            # Colisão mercado
+            if colidiu_com_algum(player_collider, lista_coliders_mapa2):
+                pos_x = old_pos_x
+                pos_y = old_pos_y
 
     
-
-    anim_time_porta1 += dt
-    anim_time_porta1_set = anim_time_porta1 / 1000
-    anim_time_idle += dt
-
-    if tela_de_inicio == False and tela_final == False:
-
+        anim_time_idle += dt
+        
         if morrer == True:
-
             anim_time_morrer += dt
             anim_time_morrer_set = anim_time_morrer / 1000
-
             if anim_time_morrer_set > 0.1:
                 frame_atual_morrer += 1
                 if frame_atual_morrer > 7:
@@ -567,44 +619,30 @@ while True:
             else:
                 window.blit(morrer_down, (pos_x, pos_y), ((frame_atual_morrer * frame_largura), 0, frame_largura, frame_altura))
 
-        elif chaves_andar_up == True:
+        elif chaves_andar_up:
             direcao_vertical = "up"
-            pos_y -= velocidade * (dt/100)
-            anim_time_walkUp, frame_atual_walkUp = avanca_frame(
-                anim_time_walkUp, frame_atual_walkUp, dt, 0.15, 7
-            )
+            anim_time_walkUp, frame_atual_walkUp = avanca_frame(anim_time_walkUp, frame_atual_walkUp, dt, 0.15, 7)
             desenha_frame_anim(andar_up, pos_x, pos_y, frame_atual_walkUp, altura_pulo)
 
-        elif chaves_andar_down == True:
+        elif chaves_andar_down:
             direcao_vertical = "down"
-            pos_y += velocidade * (dt/100)
-            anim_time_walkDown, frame_atual_walkDown = avanca_frame(
-                anim_time_walkDown, frame_atual_walkDown, dt, 0.15, 7
-            )
+            anim_time_walkDown, frame_atual_walkDown = avanca_frame(anim_time_walkDown, frame_atual_walkDown, dt, 0.15, 7)
             desenha_frame_anim(andar_down, pos_x, pos_y, frame_atual_walkDown, altura_pulo)
 
-        elif chaves_andar_left == True:
+        elif chaves_andar_left:
             direcao = "left"
-            pos_x -= velocidade * (dt/100)
-            anim_time_walkLeft, frame_atual_walkLeft = avanca_frame(
-                anim_time_walkLeft, frame_atual_walkLeft, dt, 0.15, 7
-            )
+            anim_time_walkLeft, frame_atual_walkLeft = avanca_frame(anim_time_walkLeft, frame_atual_walkLeft, dt, 0.15, 7)
             sprite_andar = andar_left_up if direcao_vertical == "up" else andar_left_down
             desenha_frame_anim(sprite_andar, pos_x, pos_y, frame_atual_walkLeft, altura_pulo)
 
-        elif chaves_andar_right == True:
+        elif chaves_andar_right:
             direcao = "right"
-            pos_x += velocidade * (dt/100)
-            anim_time_walkRight, frame_atual_walkRight = avanca_frame(
-                anim_time_walkRight, frame_atual_walkRight, dt, 0.15, 7
-            )
+            anim_time_walkRight, frame_atual_walkRight = avanca_frame(anim_time_walkRight, frame_atual_walkRight, dt, 0.15, 7)
             sprite_andar = andar_right_up if direcao_vertical == "up" else andar_right_down
             desenha_frame_anim(sprite_andar, pos_x, pos_y, frame_atual_walkRight, altura_pulo)
 
         elif pular == True:
-            anim_time_pulo, frame_atual_pulo = avanca_frame(
-                anim_time_pulo, frame_atual_pulo, dt, 0.09, 7
-            )
+            anim_time_pulo, frame_atual_pulo = avanca_frame(anim_time_pulo, frame_atual_pulo, dt, 0.09, 7)
             if direcao == "left":
                 desenha_frame_anim(pulo_left, pos_x, pos_y, frame_atual_pulo, altura_pulo)
             elif direcao == "right":
@@ -615,45 +653,8 @@ while True:
                 desenha_frame_anim(pulo_down, pos_x, pos_y, frame_atual_pulo, altura_pulo)
 
         else:
-            anim_time_idle, frame_atual_idle = avanca_frame(
-                anim_time_idle, frame_atual_idle, dt, 0.15, 7
-            )
+            anim_time_idle, frame_atual_idle = avanca_frame(anim_time_idle, frame_atual_idle, dt, 0.15, 7)
             sprite_idle = idle_up if direcao_vertical == "up" else idle_down
-            desenha_frame_anim(sprite_idle, pos_x, pos_y, frame_atual_idle,0)
-
-        player_collider = Rect(pos_x+40,pos_y +65,20,20)
-
-        if mapa_escola == True:
-            player_perto_p1 = (12 < pos_x < 100 and 250 < pos_y < 350) 
-            
-
-            if player_perto_p1:
-            
-                if anim_time_porta1_set > 0.1: 
-                    if frame_atual_porta1 < 5:
-                        frame_atual_porta1 += 1
-                    anim_time_porta1 = 0
-            else:
-
-                if anim_time_porta1_set > 0.1:
-                    if frame_atual_porta1 > 0:
-                        frame_atual_porta1 -= 1
-                    anim_time_porta1 = 0
-
-
-
-            window.blit(door_animada, (64, 288), ((frame_atual_porta1 * 32), 0, 32, 96))
-
-            if colidiu_com_algum(player_collider, lista_coliders_mapa1):
-                pos_x = old_pos_x
-                pos_y = old_pos_y
-
-        if mapa_supermercado == True:
-            if colidiu_com_algum(player_collider, lista_coliders_mapa2):
-                pos_x = old_pos_x
-                pos_y = old_pos_y
-        # draw.rect(window, (0,255,0), player_collider, 2)
-    
-    
+            desenha_frame_anim(sprite_idle, pos_x, pos_y, frame_atual_idle, 0)
 
     display.update()
