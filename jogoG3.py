@@ -174,6 +174,13 @@ posicoes_gasolinas_escola = posicoes_gasolinas_escola = [
     Rect(600, 260, 32, 32),#sala2
     Rect(350, 410, 32, 32)
 ]
+
+posicoes_gasolinas_supermercado = [
+    Rect(200, 150, 32, 32),  # açougue
+    Rect(500, 300, 32, 32),  
+    Rect(850, 450, 32, 32)   # cestos de comida
+]
+
 #MAPA 1
 mapa_escola = False
 mapa1 = carrega_mapa('mapa1.txt')
@@ -289,7 +296,7 @@ fecharPorta1 = False
 mapa2 = carrega_mapa('mapa2.txt')
 
 mapa_supermercado = False
-spawn_supermercado_pendente = True
+spawn_supermercado_pendente = False
 
 blocos_supermercado = {
     'cse': (192,192),
@@ -547,6 +554,10 @@ while True:
 
    
     if tela_de_inicio == False and tela_final == False:
+        if mapa_supermercado== True and spawn_supermercado_pendente== True:
+                pos_x = 300
+                pos_y = 550
+                spawn_supermercado_pendente = False
         #ESCOLA
         if mapa_escola == True:
             desenha_mapa1()
@@ -565,6 +576,12 @@ while True:
                 gasolinas_restantes.append(gas_rect)
             posicoes_gasolinas_escola = gasolinas_restantes
 
+            #troca de mapa- win condition (gasolinas coletadas)
+            if len(posicoes_gasolinas_escola) == 0:
+                mapa_escola = False
+                mapa_supermercado = True
+                spawn_supermercado_pendente = True
+                
             #PORTA ABRINDO
             player_perto_p1 = (12 < pos_x < 100 and 250 < pos_y < 350)
             anim_time_porta1 += dt
@@ -590,13 +607,21 @@ while True:
 
        #MERCADO
         if mapa_supermercado == True:
-            if spawn_supermercado_pendente:
-                pos_x = 300
-                pos_y = 550
-                spawn_supermercado_pendente = False
+            
 
             desenha_mapa2()
             
+            gasolinas_restantes_mercado = []
+            for gas_rect in posicoes_gasolinas_supermercado:
+                
+                if player_collider.colliderect(gas_rect):
+                    #ADICIONAR PONTUACAO
+                    continue 
+               
+                window.blit(gascan_rodando[frame_atual_gascan_girando], (gas_rect.x, gas_rect.y))
+                gasolinas_restantes_mercado.append(gas_rect)
+            posicoes_gasolinas_supermercado = gasolinas_restantes_mercado
+
             # Colisão mercado
             if colidiu_com_algum(player_collider, lista_coliders_mapa2):
                 pos_x = old_pos_x
