@@ -124,11 +124,24 @@ def desenha_telaFinal():
     window.fill((0,0,0))
     window.blit(background,(-200,-300))
     window.blit(frame, (410,155),(749,716,279,342))
-    draw.rect(window,(15, 142, 64) if bt_play.collidepoint(meu_mouse) else (23, 181, 83),bt_play)
-    draw.rect(window,(175, 50, 38) if bt_sair.collidepoint(meu_mouse) else (245, 65, 47),bt_sair)
+    draw.rect(window,(15, 142, 64) if bt_play.collidepoint(meu_mouse) else (23, 181, 83),bt_reiniciar)
+    draw.rect(window,(175, 50, 38) if bt_sair.collidepoint(meu_mouse) else (245, 65, 47),bt_sair2)
 
-    window.blit(texto_reiniciar,(480,260))
-    window.blit(texto_sair,(490,340))
+    window.blit(texto_reiniciar,(460,240))
+    window.blit(texto_sair,(500,300))
+
+    window.blit(gasolina_parada, (450,370))
+    texto_x = fontee_pequena.render(f'X {gasolinas_coletadas}',True, (255,255,255))
+    window.blit(texto_x, (500,360))
+  
+
+    if vencer == True:
+        window.blit(sombra_texto_venceu, (355,73))
+        window.blit(texto_venceu, (350,70))
+        
+    elif perder == True:
+        window.blit(sombra_texto_perdeu, (355,73))
+        window.blit(texto_perdeu, (350,70))
 
 
 
@@ -139,6 +152,7 @@ clock = time.Clock()
 #TELA DE INICIO!
 tela_de_inicio = True
 tela_final = False
+
 background = image.load('background opcao.png')
 frame = image.load('ui/Interface windows.png')
 
@@ -146,6 +160,22 @@ pixelFont = font.Font('full Pack 2025.ttf',25)
 texto_play = pixelFont.render('JOGAR', True, (255,255,255))
 texto_sair = pixelFont.render('SAIR', True, (255,255,255))
 texto_reiniciar = pixelFont.render('REINICIAR', True, (255,255,255))
+
+fontee = font.Font('Pixeled.ttf',35)
+fontee_pequena = font.Font('Pixeled.ttf',20)
+texto_reiniciar = pixelFont.render('REINICIAR',True,(255,255,255))
+texto_venceu = fontee.render('VOCE VENCEU!',True, (255,255,255))
+sombra_texto_venceu = fontee.render('VOCE VENCEU!',True, (61, 61, 61))
+
+texto_perdeu = fontee.render('VOCE PERDEU!',True, (255,255,255))
+sombra_texto_perdeu = fontee.render('VOCE PERDEU!',True, (61, 61, 61))
+
+gasolina_parada = image.load('objectss/gas can rotations/south.png')
+
+
+vencer = False
+perder = True
+
 
 #gasolina
 gascan_rodando = [
@@ -167,6 +197,8 @@ anim_time_gascan = 0
 frame_atual_gascan_desaparecendo = 0
 
 gasolina = True
+
+gasolinas_coletadas = 0
 
 posicoes_gasolinas_escola = posicoes_gasolinas_escola = [
     Rect(800, 400, 32, 32),
@@ -481,6 +513,8 @@ while True:
     meu_mouse = mouse.get_pos()
     bt_play= Rect(475,250,150,50)
     bt_sair= Rect(475,330,150,50)
+    bt_reiniciar= Rect(460,230,180,50)
+    bt_sair2= Rect(475,290,150,50)
     
     for ev in event.get():
         if ev.type == QUIT:
@@ -502,6 +536,14 @@ while True:
                 elif bt_sair.collidepoint(meu_mouse):
                     quit()
                     sys.exit()
+        if tela_final == True:
+            if ev.type == MOUSEBUTTONDOWN:
+                if bt_reiniciar.collidepoint(meu_mouse):
+                    mapa_escola = True
+                    tela_de_final = False
+            elif bt_sair2.collidepoint(meu_mouse):
+                quit()
+                sys.exit()
 
     clock.tick(60)
     dt = clock.get_time()
@@ -572,7 +614,7 @@ while True:
             gasolinas_restantes = []
             for gas_rect in posicoes_gasolinas_escola:
                 if player_collider.colliderect(gas_rect):
-                    #ADICIONAR PONTUAÇAO
+                    gasolinas_coletadas += 1
                     continue 
                 window.blit(gascan_rodando[frame_atual_gascan_girando], (gas_rect.x, gas_rect.y))
                 gasolinas_restantes.append(gas_rect)
@@ -617,7 +659,7 @@ while True:
             for gas_rect in posicoes_gasolinas_supermercado:
                 
                 if player_collider.colliderect(gas_rect):
-                    #ADICIONAR PONTUACAO
+                    gasolinas_coletadas += 1
                     continue 
                
                 window.blit(gascan_rodando[frame_atual_gascan_girando], (gas_rect.x, gas_rect.y))
