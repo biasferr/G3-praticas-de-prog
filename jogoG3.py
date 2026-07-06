@@ -558,14 +558,16 @@ while True:
                 pos_x = 300
                 pos_y = 550
                 spawn_supermercado_pendente = False
+                player_collider = Rect(pos_x + 40, pos_y + 65, 20, 20)
+
+        anim_time_gascan, frame_atual_gascan_girando = avanca_frame(
+            anim_time_gascan, frame_atual_gascan_girando, dt, 0.3, len(gascan_rodando) - 1
+        )
         #ESCOLA
         if mapa_escola == True:
             desenha_mapa1()
             
-            anim_time_gascan, frame_atual_gascan_girando = avanca_frame(
-                anim_time_gascan, frame_atual_gascan_girando, dt, 0.3, len(gascan_rodando) - 1
-            )
-            
+    
             
             gasolinas_restantes = []
             for gas_rect in posicoes_gasolinas_escola:
