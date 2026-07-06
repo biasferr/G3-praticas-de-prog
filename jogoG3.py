@@ -120,6 +120,15 @@ def desenha_telaInicio():
     window.blit(texto_play,(480,260))
     window.blit(texto_sair,(490,340))
 
+def desenha_telaFinal():
+    window.fill((0,0,0))
+    window.blit(background,(-200,-300))
+    window.blit(frame, (410,155),(749,716,279,342))
+    draw.rect(window,(15, 142, 64) if bt_play.collidepoint(meu_mouse) else (23, 181, 83),bt_play)
+    draw.rect(window,(175, 50, 38) if bt_sair.collidepoint(meu_mouse) else (245, 65, 47),bt_sair)
+
+    window.blit(texto_reiniciar,(480,260))
+    window.blit(texto_sair,(490,340))
 
 
 
@@ -129,13 +138,14 @@ clock = time.Clock()
 
 #TELA DE INICIO!
 tela_de_inicio = True
+tela_final = False
 background = image.load('background opcao.png')
 frame = image.load('ui/Interface windows.png')
 
-path_botao = 'ui/button/'
 pixelFont = font.Font('full Pack 2025.ttf',25)
 texto_play = pixelFont.render('JOGAR', True, (255,255,255))
 texto_sair = pixelFont.render('SAIR', True, (255,255,255))
+texto_reiniciar = pixelFont.render('REINICIAR', True, (255,255,255))
 
 #gasolina
 gascan_rodando = [
@@ -539,14 +549,23 @@ while True:
     anim_time_porta1_set = anim_time_porta1 / 1000
     anim_time_idle += dt
 
-    if tela_de_inicio == False:
+    if tela_de_inicio == False and tela_final == False:
 
         if morrer == True:
-            anim_time_morrer, frame_atual_morrer = avanca_frame(
-                anim_time_morrer, frame_atual_morrer, dt, 0.1, 7, reiniciar=False
-            )
-            sprite_morrer = morrer_up if direcao_vertical == "up" else morrer_down
-            desenha_frame_anim(sprite_morrer, pos_x, pos_y, frame_atual_morrer,0)
+
+            anim_time_morrer += dt
+            anim_time_morrer_set = anim_time_morrer / 1000
+
+            if anim_time_morrer_set > 0.1:
+                frame_atual_morrer += 1
+                if frame_atual_morrer > 7:
+                    frame_atual_morrer = 7
+                anim_time_morrer = 0
+
+            if direcao_vertical == "up":
+                window.blit(morrer_up, (pos_x, pos_y), ((frame_atual_morrer * frame_largura), 0, frame_largura, frame_altura))
+            else:
+                window.blit(morrer_down, (pos_x, pos_y), ((frame_atual_morrer * frame_largura), 0, frame_largura, frame_altura))
 
         elif chaves_andar_up == True:
             direcao_vertical = "up"
@@ -634,6 +653,7 @@ while True:
                 pos_x = old_pos_x
                 pos_y = old_pos_y
         # draw.rect(window, (0,255,0), player_collider, 2)
+    
     
 
     display.update()

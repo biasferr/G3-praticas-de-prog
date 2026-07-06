@@ -1,4 +1,4 @@
-f,f,f,f
+f,f,f
 cse,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,pbs2,csd
 be,pi,pi,pi,pi,pi,pi,pi,pi,pi,bd
 be,fcse1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,fbs1,bd

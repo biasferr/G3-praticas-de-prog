@@ -45,10 +45,10 @@ zumbi_walk_left = image.load('Zombie/walk_left_zombie_spritesheet.png')
 zumbi_walk_right = image.load('Zombie/walk_right_zombie_spritesheet.png')
 
 
-zumbi_attack_down = image.load('attack_down_zombie_spritesheet.png')
-zumbi_attack_up = image.load('attack_up_zombie_spritesheet.png')
-zumbi_attack_left = image.load('attack_left_zombie_spritesheet.png')
-zumbi_attack_right = image.load('attack_right_zombie_spritesheet.png')
+zumbi_attack_down = image.load('Zombie/attack_down_zombie_spritesheet.png')
+zumbi_attack_up = image.load('Zombie/attack_up_zombie_spritesheet.png')
+zumbi_attack_left = image.load('Zombie/attack_left_zombie_spritesheet.png')
+zumbi_attack_right = image.load('Zombie/attack_right_zombie_spritesheet.png')
 
 # Variáveis
 
