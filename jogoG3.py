@@ -124,8 +124,8 @@ def desenha_telaFinal():
     window.fill((0,0,0))
     window.blit(background,(-200,-300))
     window.blit(frame, (410,155),(749,716,279,342))
-    draw.rect(window,(15, 142, 64) if bt_play.collidepoint(meu_mouse) else (23, 181, 83),bt_reiniciar)
-    draw.rect(window,(175, 50, 38) if bt_sair.collidepoint(meu_mouse) else (245, 65, 47),bt_sair2)
+    draw.rect(window,(15, 142, 64) if bt_reiniciar.collidepoint(meu_mouse) else (23, 181, 83),bt_reiniciar)
+    draw.rect(window,(175, 50, 38) if bt_sair2.collidepoint(meu_mouse) else (245, 65, 47),bt_sair2)
 
     window.blit(texto_reiniciar,(460,240))
     window.blit(texto_sair,(500,300))
@@ -174,7 +174,7 @@ gasolina_parada = image.load('objectss/gas can rotations/south.png')
 
 
 vencer = False
-perder = True
+perder = False
 
 
 #gasolina
@@ -526,24 +526,37 @@ while True:
                 vel_y = -16
             if ev.key == K_v:
                 vidas -= 1
-            if ev.key == K_o:
-                abrirPorta1 = True
-        if tela_de_inicio == True:
-            if ev.type == MOUSEBUTTONDOWN:
+        
+        # Sistema de cliques nos botões (Início ou Fim)
+        if ev.type == MOUSEBUTTONDOWN:
+            if tela_de_inicio == True:
                 if bt_play.collidepoint(meu_mouse):
                     mapa_escola= True
                     tela_de_inicio = False
                 elif bt_sair.collidepoint(meu_mouse):
                     quit()
                     sys.exit()
-        if tela_final == True:
-            if ev.type == MOUSEBUTTONDOWN:
-                if bt_reiniciar.collidepoint(meu_mouse):
+            elif tela_final == True:
+                if bt_reiniciar.collidepoint(meu_mouse):  
+                    #REINICIA O JOGO DO ZERO
+                    pos_x = 500
+                    pos_y = 380
+                    vidas = 3
+                    morrer = False
+                    frame_atual_morrer = 0
+                    tela_final = False
                     mapa_escola = True
-                    tela_de_final = False
-            elif bt_sair2.collidepoint(meu_mouse):
-                quit()
-                sys.exit()
+                    mapa_supermercado = False
+                    spawn_supermercado_pendente = True
+                    # Reinicia as gasolinas
+                    posicoes_gasolinas_escola = [Rect(800, 400, 32, 32), Rect(100, 100, 32, 32), Rect(600, 260, 32, 32), Rect(350, 410, 32, 32)]
+                    posicoes_gasolinas_supermercado = [Rect(200, 150, 32, 32), Rect(500, 300, 32, 32), Rect(850, 450, 32, 32)]
+                    gasolinas_coletadas = 0
+                    vencer = False
+                    perder = False
+                elif bt_sair2.collidepoint(meu_mouse):
+                    quit()
+                    sys.exit()
 
     clock.tick(60)
     dt = clock.get_time()
@@ -579,7 +592,8 @@ while True:
 
     if tela_de_inicio == True:
         desenha_telaInicio()
-
+    elif tela_final == True:
+        desenha_telaFinal()
 
     if tela_de_inicio == False and tela_final == False and morrer == False:
         if chaves_andar_up:
@@ -591,42 +605,39 @@ while True:
         elif chaves_andar_right:
             pos_x += velocidade * (dt/100)
 
-
     player_collider = Rect(pos_x + 40, pos_y + 65, 20, 20)
 
-   
     if tela_de_inicio == False and tela_final == False:
-        if mapa_supermercado== True and spawn_supermercado_pendente== True:
-                pos_x = 300
-                pos_y = 550
-                spawn_supermercado_pendente = False
-                player_collider = Rect(pos_x + 40, pos_y + 65, 20, 20)
+        
+        if mapa_supermercado == True and spawn_supermercado_pendente == True:
+            pos_x = 300
+            pos_y = 550
+            player_collider = Rect(pos_x + 40, pos_y + 65, 20, 20)
+            spawn_supermercado_pendente = False
 
         anim_time_gascan, frame_atual_gascan_girando = avanca_frame(
             anim_time_gascan, frame_atual_gascan_girando, dt, 0.3, len(gascan_rodando) - 1
         )
-        #ESCOLA
+
+        # ESCOLA
         if mapa_escola == True:
             desenha_mapa1()
-            
-    
             
             gasolinas_restantes = []
             for gas_rect in posicoes_gasolinas_escola:
                 if player_collider.colliderect(gas_rect):
-                    gasolinas_coletadas += 1
+                    gasolinas_coletadas+=1
                     continue 
                 window.blit(gascan_rodando[frame_atual_gascan_girando], (gas_rect.x, gas_rect.y))
                 gasolinas_restantes.append(gas_rect)
             posicoes_gasolinas_escola = gasolinas_restantes
 
-            #troca de mapa- win condition (gasolinas coletadas)
             if len(posicoes_gasolinas_escola) == 0:
                 mapa_escola = False
                 mapa_supermercado = True
                 spawn_supermercado_pendente = True
-                
-            #PORTA ABRINDO
+
+            # PORTA ABRINDO
             player_perto_p1 = (12 < pos_x < 100 and 250 < pos_y < 350)
             anim_time_porta1 += dt
             anim_time_porta1_set = anim_time_porta1 / 1000
@@ -644,34 +655,34 @@ while True:
 
             window.blit(door_animada, (64, 288), ((frame_atual_porta1 * 32), 0, 32, 96))
 
-            # Colisão Escola
             if colidiu_com_algum(player_collider, lista_coliders_mapa1):
                 pos_x = old_pos_x
                 pos_y = old_pos_y
 
-       #MERCADO
+        # MERCADO
         if mapa_supermercado == True:
-            
-
             desenha_mapa2()
             
             gasolinas_restantes_mercado = []
             for gas_rect in posicoes_gasolinas_supermercado:
-                
                 if player_collider.colliderect(gas_rect):
-                    gasolinas_coletadas += 1
+                    gasolinas_coletadas+=1
                     continue 
-               
                 window.blit(gascan_rodando[frame_atual_gascan_girando], (gas_rect.x, gas_rect.y))
                 gasolinas_restantes_mercado.append(gas_rect)
             posicoes_gasolinas_supermercado = gasolinas_restantes_mercado
+            
+            # WIN CONDITION
+            if len(posicoes_gasolinas_supermercado) == 0:
+                mapa_supermercado = False
+                tela_final = True
+                vencer = True
 
-            # Colisão mercado
             if colidiu_com_algum(player_collider, lista_coliders_mapa2):
                 pos_x = old_pos_x
                 pos_y = old_pos_y
 
-    
+        # ANIMACAO JOGADOR
         anim_time_idle += dt
         
         if morrer == True:
@@ -679,8 +690,12 @@ while True:
             anim_time_morrer_set = anim_time_morrer / 1000
             if anim_time_morrer_set > 0.1:
                 frame_atual_morrer += 1
+                
                 if frame_atual_morrer > 7:
                     frame_atual_morrer = 7
+                    tela_final = True 
+                    perder = True 
+                    
                 anim_time_morrer = 0
 
             if direcao_vertical == "up":
