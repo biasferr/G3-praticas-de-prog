@@ -114,6 +114,8 @@ def desenha_telaInicio():
     window.fill((0,0,0))
     window.blit(background,(-200,-300))
     window.blit(frame, (410,155),(749,716,279,342))
+    window.blit((fontee.render('INVASÃO ZUMBI', True, (61,61,61))), (355,95))
+    window.blit((fontee.render('INVASÃO ZUMBI', True, (255,255,255))), (350,90))
     draw.rect(window,(15, 142, 64) if bt_play.collidepoint(meu_mouse) else (23, 181, 83),bt_play)
     draw.rect(window,(175, 50, 38) if bt_sair.collidepoint(meu_mouse) else (245, 65, 47),bt_sair)
 
@@ -156,6 +158,7 @@ tela_final = False
 background = image.load('background opcao.png')
 frame = image.load('ui/Interface windows.png')
 
+
 pixelFont = font.Font('full Pack 2025.ttf',25)
 texto_play = pixelFont.render('JOGAR', True, (255,255,255))
 texto_sair = pixelFont.render('SAIR', True, (255,255,255))
@@ -166,7 +169,7 @@ fontee_pequena = font.Font('Pixeled.ttf',20)
 texto_reiniciar = pixelFont.render('REINICIAR',True,(255,255,255))
 texto_venceu = fontee.render('VOCE VENCEU!',True, (255,255,255))
 sombra_texto_venceu = fontee.render('VOCE VENCEU!',True, (61, 61, 61))
-
+#texto_titulo = fontee.render('INVASÃO ZUMBI', True, (255,255,255))
 texto_perdeu = fontee.render('VOCE PERDEU!',True, (255,255,255))
 sombra_texto_perdeu = fontee.render('VOCE PERDEU!',True, (61, 61, 61))
 
