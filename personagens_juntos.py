@@ -51,6 +51,11 @@ zumbi_attack_right = image.load('Zombie/attack_right_zombie_spritesheet.png')
 
 zumbi_morrer_down = image.load('Zombie/zumbi_morrer_down.png')
 zumbi_morrer_up = image.load('Zombie/zumbi_morrer_up.png')
+
+# outros
+coracao = image.load('coracao.png')
+coracao = transform.scale(coracao, (24, 24))
+
 # Variáveis
 
 frame_atual_idle = 0
@@ -272,6 +277,15 @@ while True:
 
 
     window.fill((141, 207, 241))
+
+    if vidas >= 1:
+        window.blit(coracao, (10, 10))
+
+    if vidas >= 2:
+        window.blit(coracao, (45, 10))
+
+    if vidas >= 3:
+        window.blit(coracao, (80, 10)
 
     anim_time_idle += dt
     anim_time_idle_set = anim_time_idle / 1000
