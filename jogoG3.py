@@ -3,8 +3,8 @@ import sys
 
 #VARIAVEIS
 tile_size = 32
-frame_largura = 96
-frame_altura = 128
+frame_largura = 64
+frame_altura = 85
 tiles_solidos= {'be', 'bd', 'cse', 'csd', 'cie', 'cid', 'bi', 'curse', 'cursd'}
 posicoes_cadeira_escola = [(88, 186), (152, 186), (216, 186), (120, 250), (152, 250), (184, 250)]
 
@@ -24,7 +24,7 @@ def carrega_mapa(caminho):
 
 
 def mudaEscala(animacao):
-    return transform.scale(animacao, (768, 128))
+    return transform.scale(animacao, (frame_largura * 8, frame_altura))
 
 
 def desenha_objetos(posicoes_objetos):
@@ -134,7 +134,7 @@ def desenha_telaFinal():
 
     window.blit(gasolina_parada, (450,370))
     texto_x = fontee_pequena.render(f'X {gasolinas_coletadas}',True, (255,255,255))
-    window.blit(texto_x, (500,360))
+    window.blit(texto_x, (485,365))
   
 
     if vencer == True:
@@ -146,6 +146,239 @@ def desenha_telaFinal():
         window.blit(texto_perdeu, (350,70))
 
 
+def cria_zumbi(x, y):
+    return {
+        "x": x,
+        "y": y,
+
+        "velocidade": 4,
+        "vidas": 3,
+
+        "direcao": "down",
+
+        "andar": False,
+        "atacar": False,
+        "morrer": False,
+
+        "frame_idle": 0,
+        "anim_idle": 0,
+
+        "frame_walk": 0,
+        "anim_walk": 0,
+
+        "frame_atacar": 0,
+        "anim_atacar": 0,
+
+        "frame_morrer": 0,
+        "anim_morrer": 0,
+
+        "ataque_acertou": False,
+        "tirou_vida": False
+    }
+
+
+
+def verificar_ataque_personagem(zumbi):
+    caixa_zumbi = cria_collider_zumbi(zumbi)
+
+    if direcao == "right":
+        caixa_ataque = Rect(pos_x + 45, pos_y + altura_pulo + 35, alcance_lanca + 20, 30)
+
+    elif direcao == "left":
+        caixa_ataque = Rect(pos_x - alcance_lanca, pos_y + altura_pulo + 35, alcance_lanca + 20, 30)
+
+    elif direcao == "up":
+        caixa_ataque = Rect(pos_x + 18, pos_y + altura_pulo + 20 - alcance_lanca, 30, alcance_lanca + 20)
+
+    else:
+        caixa_ataque = Rect(pos_x + 18, pos_y + altura_pulo + 55, 30, alcance_lanca + 20)
+
+    if caixa_ataque.colliderect(caixa_zumbi):
+        return True
+    else:
+        return False
+
+
+def verificar_ataque_zumbi(zumbi):
+    caixa_personagem = Rect(pos_x + 24, pos_y + altura_pulo + 56, 16, 18)
+
+    if zumbi["direcao"] == "right":
+        caixa_ataque_zumbi = Rect(zumbi["x"] + 42, zumbi["y"] + 35, alcance_ataque_zumbi, 35)
+
+    elif zumbi["direcao"] == "left":
+        caixa_ataque_zumbi = Rect(zumbi["x"] - alcance_ataque_zumbi, zumbi["y"] + 35, alcance_ataque_zumbi, 35)
+
+    elif zumbi["direcao"] == "up":
+        caixa_ataque_zumbi = Rect(zumbi["x"] + 18, zumbi["y"] - alcance_ataque_zumbi, 35, alcance_ataque_zumbi)
+
+    else:
+        caixa_ataque_zumbi = Rect(zumbi["x"] + 18, zumbi["y"] + 55, 35, alcance_ataque_zumbi)
+
+    if caixa_ataque_zumbi.colliderect(caixa_personagem):
+        return True
+    else:
+        return False
+
+
+def cria_collider_zumbi(zumbi):
+    return Rect(zumbi["x"] + 22, zumbi["y"] + 55, 20, 20)
+
+
+def mexe_zumbi(zumbi, dt, lista_coliders):
+    distancia_x_zumbi = pos_x - zumbi["x"]
+    distancia_y_zumbi = pos_y - zumbi["y"]
+
+    if zumbi["vidas"] <= 0:
+        zumbi["morrer"] = True
+
+    if zumbi["morrer"] == True:
+        zumbi["andar"] = False
+        zumbi["atacar"] = False
+
+    if zumbi["morrer"] == False and abs(distancia_x_zumbi) < alcance_perseguir_zumbi and abs(distancia_y_zumbi) < alcance_perseguir_zumbi:
+
+        if abs(distancia_x_zumbi) <= 18 and abs(distancia_y_zumbi) <= 18:
+            zumbi["andar"] = False
+
+            if zumbi["atacar"] == False:
+                zumbi["atacar"] = True
+                zumbi["frame_atacar"] = 0
+                zumbi["anim_atacar"] = 0
+                zumbi["ataque_acertou"] = False
+
+        else:
+            zumbi["andar"] = True
+            zumbi["atacar"] = False
+
+            vel_zumbi = zumbi["velocidade"] * (dt/100)
+
+            old_zumbi_x = zumbi["x"]
+
+            if pos_x > zumbi["x"]:
+                zumbi["x"] += vel_zumbi
+            elif pos_x < zumbi["x"]:
+                zumbi["x"] -= vel_zumbi
+
+            zumbi_collider = cria_collider_zumbi(zumbi)
+
+            if colidiu_com_algum(zumbi_collider, lista_coliders):
+                zumbi["x"] = old_zumbi_x
+
+            old_zumbi_y = zumbi["y"]
+
+            if pos_y > zumbi["y"]:
+                zumbi["y"] += vel_zumbi
+            elif pos_y < zumbi["y"]:
+                zumbi["y"] -= vel_zumbi
+
+            zumbi_collider = cria_collider_zumbi(zumbi)
+
+            if colidiu_com_algum(zumbi_collider, lista_coliders):
+                zumbi["y"] = old_zumbi_y
+
+            if abs(distancia_x_zumbi) > abs(distancia_y_zumbi) + 10:
+                if pos_x > zumbi["x"]:
+                    zumbi["direcao"] = "right"
+                elif pos_x < zumbi["x"]:
+                    zumbi["direcao"] = "left"
+
+            elif abs(distancia_y_zumbi) > abs(distancia_x_zumbi) + 10:
+                if pos_y > zumbi["y"]:
+                    zumbi["direcao"] = "down"
+                elif pos_y < zumbi["y"]:
+                    zumbi["direcao"] = "up"
+
+    else:
+        zumbi["andar"] = False
+        zumbi["atacar"] = False
+
+
+def desenha_zumbi(zumbi, dt):
+
+    if zumbi["morrer"] == True:
+        zumbi["anim_morrer"] += dt
+        anim_morrer_set = zumbi["anim_morrer"] / 1000
+
+        if anim_morrer_set > 0.1:
+            zumbi["frame_morrer"] += 1
+
+            if zumbi["frame_morrer"] > 8:
+                zumbi["frame_morrer"] = 8
+
+            zumbi["anim_morrer"] = 0
+
+        if zumbi["direcao"] == "up":
+            desenha_frame_anim(morrer_up_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_morrer"], 0)
+        else:
+            desenha_frame_anim(morrer_down_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_morrer"], 0)
+
+
+    elif zumbi["atacar"] == True:
+        zumbi["anim_atacar"] += dt
+        anim_atacar_set = zumbi["anim_atacar"] / 1000
+
+        if anim_atacar_set > 0.1:
+            zumbi["frame_atacar"] += 1
+
+            if zumbi["frame_atacar"] > 8:
+                zumbi["frame_atacar"] = 0
+                zumbi["ataque_acertou"] = False
+
+            zumbi["anim_atacar"] = 0
+
+            if zumbi["ataque_acertou"] == False and morrer == False and zumbi["frame_atacar"] >= 3:
+                if verificar_ataque_zumbi(zumbi) == True:
+                    zumbi["tirou_vida"] = True
+                    zumbi["ataque_acertou"] = True
+
+        if zumbi["direcao"] == "left":
+            desenha_frame_anim(ataque_left_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_atacar"], 0)
+
+        elif zumbi["direcao"] == "right":
+            desenha_frame_anim(ataque_right_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_atacar"], 0)
+
+        elif zumbi["direcao"] == "up":
+            desenha_frame_anim(ataque_up_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_atacar"], 0)
+
+        else:
+            desenha_frame_anim(ataque_down_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_atacar"], 0)
+
+
+    elif zumbi["andar"] == True:
+        zumbi["anim_walk"], zumbi["frame_walk"] = avanca_frame(
+            zumbi["anim_walk"],
+            zumbi["frame_walk"],
+            dt,
+            0.15,
+            7
+        )
+
+        if zumbi["direcao"] == "right":
+            desenha_frame_anim(andar_right_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_walk"], 0)
+
+        elif zumbi["direcao"] == "left":
+            desenha_frame_anim(andar_left_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_walk"], 0)
+
+        elif zumbi["direcao"] == "up":
+            desenha_frame_anim(andar_up_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_walk"], 0)
+
+        else:
+            desenha_frame_anim(andar_down_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_walk"], 0)
+
+
+    else:
+        zumbi["anim_idle"], zumbi["frame_idle"] = avanca_frame(
+            zumbi["anim_idle"],
+            zumbi["frame_idle"],
+            dt,
+            0.2,
+            3
+        )
+
+        if zumbi["direcao"] == "up":
+            desenha_frame_anim(idle_up_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_idle"], 0)
+        else:
+            desenha_frame_anim(idle_down_zumbi, zumbi["x"], zumbi["y"], zumbi["frame_idle"], 0)
 
 init()
 window = display.set_mode((1056,624))
@@ -174,6 +407,10 @@ texto_perdeu = fontee.render('VOCE PERDEU!',True, (255,255,255))
 sombra_texto_perdeu = fontee.render('VOCE PERDEU!',True, (61, 61, 61))
 
 gasolina_parada = image.load('objectss/gas can rotations/south.png')
+gasolina_parada = transform.scale(gasolina_parada, (24, 24))
+
+coracao = image.load('coracao.png')
+coracao = transform.scale(coracao, (34, 34))
 
 
 vencer = False
@@ -187,6 +424,9 @@ gascan_rodando = [
     image.load('objectss/gas can rotations/south-west.png'),
     image.load('objectss/gas can rotations/east.png'),
     image.load('objectss/gas can rotations/north-west.png')]
+
+for i in range(len(gascan_rodando)):
+    gascan_rodando[i] = transform.scale(gascan_rodando[i], (24, 24))
 
 gascan_desaparecendo= [
     image.load('objectss/gas can desaparecendo/gas can1.png'),
@@ -204,16 +444,16 @@ gasolina = True
 gasolinas_coletadas = 0
 
 posicoes_gasolinas_escola = posicoes_gasolinas_escola = [
-    Rect(800, 400, 32, 32),
-    Rect(100, 100, 32, 32),#sala1
-    Rect(600, 260, 32, 32),#sala2
-    Rect(350, 410, 32, 32)
+    Rect(800, 400, 24, 24),
+    Rect(100, 100, 24, 24),#sala1
+    Rect(600, 260, 24, 24),#sala2
+    Rect(350, 410, 24, 24)
 ]
 
 posicoes_gasolinas_supermercado = [
-    Rect(200, 150, 32, 32),  # açougue
-    Rect(500, 300, 32, 32),  
-    Rect(850, 450, 32, 32)   # cestos de comida
+    Rect(200, 150, 24, 24),  # açougue
+    Rect(500, 300, 24, 24),  
+    Rect(850, 450, 24, 24)   # cestos de comida
 ]
 
 #MAPA 1
@@ -435,43 +675,99 @@ lista_coliders_mapa2 = constroi_coliders(
 
 
 #MOVIMENTAÇÃO PERSONAGEM
-# Load das imagens
+# Load das imagens da personagem
 
-idle_up = image.load('Animacoes_movimentacao/Idle/Idle_Up.png')
+idle_up = image.load('personagem- lanca/Idle_Spear_Up.png')
 idle_up = mudaEscala(idle_up)
-idle_down = image.load('Animacoes_movimentacao/Idle/Idle_Down.png')
+idle_down = image.load('personagem- lanca/Idle_Spear_Down.png')
 idle_down = mudaEscala(idle_down)
 
-andar_up = image.load('Animacoes_movimentacao/andar/walk_Up.png')
-andar_up= mudaEscala(andar_up)
-andar_down = image.load('Animacoes_movimentacao/andar/walk_Down.png')
-andar_down= mudaEscala(andar_down)
+andar_up = image.load('personagem- lanca/walk_Spear_Up.png')
+andar_up = mudaEscala(andar_up)
+andar_down = image.load('personagem- lanca/walk_Spear_Down.png')
+andar_down = mudaEscala(andar_down)
 
-andar_left_up = image.load('Animacoes_movimentacao/andar/walk_Left_Up.png')
-andar_left_up= mudaEscala(andar_left_up)
-andar_left_down = image.load('Animacoes_movimentacao/andar/walk_Left_Down.png')
-andar_left_down= mudaEscala(andar_left_down)
+andar_left_up = image.load('personagem- lanca/walk_Spear_Left_Up.png')
+andar_left_up = mudaEscala(andar_left_up)
+andar_left_down = image.load('personagem- lanca/walk_Spear_Left_Down.png')
+andar_left_down = mudaEscala(andar_left_down)
 
-andar_right_up = image.load('Animacoes_movimentacao/andar/walk_Right_Up.png')
-andar_right_up= mudaEscala(andar_right_up)
-andar_right_down = image.load('Animacoes_movimentacao/andar/walk_Right_Down.png')
-andar_right_down= mudaEscala(andar_right_down)
+andar_right_up = image.load('personagem- lanca/walk_Spear_Right_Up.png')
+andar_right_up = mudaEscala(andar_right_up)
 
-pulo_up = image.load('Animacoes_movimentacao/pular/Jump_Up.png')
-pulo_up=mudaEscala(pulo_up)
-pulo_down = image.load('Animacoes_movimentacao/pular/Jump_Down.png')
-pulo_down= mudaEscala(pulo_down)
-pulo_left = image.load('Animacoes_movimentacao/pular/Jump_Left_Down.png')
-pulo_left=mudaEscala(pulo_left)
-pulo_right = image.load('Animacoes_movimentacao/pular/Jump_Right_Down.png')
-pulo_right= mudaEscala(pulo_right)
+andar_right_down = image.load('personagem- lanca/walk_Spear_Right_Down.png')
+andar_right_down = mudaEscala(andar_right_down)
 
-morrer_up = image.load('Animacoes_movimentacao/morrer/Death_Up.png')
-morrer_up=mudaEscala(morrer_up)
-morrer_down = image.load('Animacoes_movimentacao/morrer/Death_Down.png')
-morrer_down=mudaEscala(morrer_down)
+pulo_up = image.load('personagem- lanca/Jump_spear_Up.png')
+pulo_up = mudaEscala(pulo_up)
+pulo_down = image.load('personagem- lanca/Jump_Spear_Down.png')
+pulo_down = mudaEscala(pulo_down)
+
+pulo_left = image.load('personagem- lanca/Jump_Spear_Left_Down.png')
+pulo_left = mudaEscala(pulo_left)
+pulo_right = image.load('personagem- lanca/Jump_Spear_Right_Down.png')
+pulo_right = mudaEscala(pulo_right)
+
+morrer_up = image.load('personagem- lanca/death_Spear_Up.png')
+morrer_up = mudaEscala(morrer_up)
+morrer_down = image.load('personagem- lanca/death_Spear_Down.png')
+morrer_down = mudaEscala(morrer_down)
+
+# Load das imagens de ataque da personagem com lança
+
+ataque_up = image.load('personagem- lanca/Attack_Spear_Up.png')
+ataque_up = mudaEscala(ataque_up)
+
+ataque_down = image.load('personagem- lanca/Attack_Spear_Down.png')
+ataque_down = mudaEscala(ataque_down)
+
+ataque_left = image.load('personagem- lanca/Attack_Spear_Left.png')
+ataque_left = mudaEscala(ataque_left)
+
+ataque_right = image.load('personagem- lanca/Attack_Spear_Right.png')
+ataque_right = mudaEscala(ataque_right)
+
+#load das imagens do zumbi
+
+# Load das imagens do zumbi
+idle_up_zumbi = image.load('Zombie/idle_up_zombie_spritesheet.png')
+idle_up_zumbi = transform.scale(idle_up_zumbi, (frame_largura * 4, frame_altura))
+
+idle_down_zumbi = image.load('Zombie/idle_down_zombie_spritesheet.png')
+idle_down_zumbi = transform.scale(idle_down_zumbi, (frame_largura * 4, frame_altura))
+
+andar_up_zumbi = image.load('Zombie/walk_up_zombie_spritesheet.png')
+andar_up_zumbi = mudaEscala(andar_up_zumbi)
+
+andar_down_zumbi = image.load('Zombie/walk_down_zombie_spritesheet.png')
+andar_down_zumbi =mudaEscala(andar_down_zumbi)
+
+andar_left_zumbi = image.load('Zombie/walk_left_zombie_spritesheet.png')
+andar_left_zumbi = mudaEscala(andar_left_zumbi)
+
+andar_right_zumbi = image.load('Zombie/walk_right_zombie_spritesheet.png')
+andar_right_zumbi = mudaEscala(andar_right_zumbi)
+
+ataque_up_zumbi = image.load('Zombie/attack_up_zombie_spritesheet.png')
+ataque_up_zumbi = transform.scale(ataque_up_zumbi, (frame_largura * 9, frame_altura))
+
+ataque_down_zumbi = image.load('Zombie/attack_down_zombie_spritesheet.png')
+ataque_down_zumbi = transform.scale(ataque_down_zumbi, (frame_largura * 9, frame_altura))
+
+ataque_left_zumbi = image.load('Zombie/attack_left_zombie_spritesheet.png')
+ataque_left_zumbi = transform.scale(ataque_left_zumbi, (frame_largura * 9, frame_altura))
+
+ataque_right_zumbi = image.load('Zombie/attack_right_zombie_spritesheet.png')
+ataque_right_zumbi = transform.scale(ataque_right_zumbi, (frame_largura * 9, frame_altura))
+
+morrer_up_zumbi = image.load('Zombie/zumbi_morrer_up.png')
+morrer_up_zumbi = transform.scale(morrer_up_zumbi, (frame_largura * 9, frame_altura))
+
+morrer_down_zumbi = image.load('Zombie/zumbi_morrer_down.png')
+morrer_down_zumbi = transform.scale(morrer_down_zumbi, (frame_largura * 9, frame_altura))
 
 # Variáveis
+# Variáveis da personagem
 
 frame_atual_idle = 0
 anim_time_idle = 0
@@ -506,10 +802,24 @@ anim_time_morrer = 0
 
 vidas = 3
 
-direcao = "right"
+atacar = False
+frame_atual_ataque = 0
+anim_time_ataque = 0
+
+ataque_acertou = False
+alcance_lanca = 32
+
+direcao = "down"
 direcao_vertical = "down"
 
+# variaveis do zumbi
 
+zumbis_mapa1 = [cria_zumbi(200, 200),cria_zumbi(700, 350)]
+
+zumbis_mapa2 = [cria_zumbi(250, 100),cria_zumbi(500, 300),cria_zumbi(850, 420)]
+
+alcance_ataque_zumbi = 44
+alcance_perseguir_zumbi = 180
 
 
 while True:
@@ -527,8 +837,16 @@ while True:
             if ev.key == K_SPACE:
                 pular = True
                 vel_y = -16
-            if ev.key == K_v:
-                vidas -= 1
+
+        
+        if ev.type == MOUSEBUTTONDOWN and morrer == False:
+            if tela_de_inicio == False and tela_final == False:
+                if ev.button == 1 and atacar == False:
+                    atacar = True
+                    frame_atual_ataque = 0
+                    anim_time_ataque = 0
+                    ataque_acertou = False
+
         
         # Sistema de cliques nos botões (Início ou Fim)
         if ev.type == MOUSEBUTTONDOWN:
@@ -552,9 +870,11 @@ while True:
                     mapa_supermercado = False
                     spawn_supermercado_pendente = True
                     # Reinicia as gasolinas
-                    posicoes_gasolinas_escola = [Rect(800, 400, 32, 32), Rect(100, 100, 32, 32), Rect(600, 260, 32, 32), Rect(350, 410, 32, 32)]
-                    posicoes_gasolinas_supermercado = [Rect(200, 150, 32, 32), Rect(500, 300, 32, 32), Rect(850, 450, 32, 32)]
+                    posicoes_gasolinas_escola = [Rect(800, 400, 24, 24), Rect(100, 100, 24, 24), Rect(600, 260, 24, 24), Rect(350, 410, 24, 24)]
+                    posicoes_gasolinas_supermercado = [Rect(200, 150, 24, 24), Rect(500, 300, 24, 24), Rect(850, 450, 24, 24)]
                     gasolinas_coletadas = 0
+                    zumbis_mapa1 = [cria_zumbi(200, 200), cria_zumbi(700, 350)]
+                    zumbis_mapa2 = [cria_zumbi(250, 100), cria_zumbi(500, 300), cria_zumbi(850, 420)]
                     vencer = False
                     perder = False
                 elif bt_sair2.collidepoint(meu_mouse):
@@ -598,24 +918,30 @@ while True:
     elif tela_final == True:
         desenha_telaFinal()
 
-    if tela_de_inicio == False and tela_final == False and morrer == False:
+    if tela_de_inicio == False and tela_final == False and morrer == False and atacar == False:
         if chaves_andar_up:
             pos_y -= velocidade * (dt/100)
+            direcao = "up"
+            direcao_vertical = "up"
         elif chaves_andar_down:
             pos_y += velocidade * (dt/100)
+            direcao = "down"
+            direcao_vertical = "down"
         elif chaves_andar_left:
             pos_x -= velocidade * (dt/100)
+            direcao = "left"
         elif chaves_andar_right:
             pos_x += velocidade * (dt/100)
+            direcao = "right"
 
-    player_collider = Rect(pos_x + 40, pos_y + 65, 20, 20)
+    player_collider = Rect(pos_x + 24, pos_y + 56, 16, 18)
 
     if tela_de_inicio == False and tela_final == False:
         
         if mapa_supermercado == True and spawn_supermercado_pendente == True:
             pos_x = 300
             pos_y = 550
-            player_collider = Rect(pos_x + 40, pos_y + 65, 20, 20)
+            player_collider = Rect(pos_x + 24, pos_y + 56, 16, 18)
             spawn_supermercado_pendente = False
 
         anim_time_gascan, frame_atual_gascan_girando = avanca_frame(
@@ -658,6 +984,14 @@ while True:
 
             window.blit(door_animada, (64, 288), ((frame_atual_porta1 * 32), 0, 32, 96))
 
+            for zumbi in zumbis_mapa1:
+                mexe_zumbi(zumbi, dt, lista_coliders_mapa1)
+                desenha_zumbi(zumbi, dt)
+
+                if zumbi["tirou_vida"] == True:
+                    vidas -= 1
+                    zumbi["tirou_vida"] = False
+
             if colidiu_com_algum(player_collider, lista_coliders_mapa1):
                 pos_x = old_pos_x
                 pos_y = old_pos_y
@@ -675,6 +1009,14 @@ while True:
                 gasolinas_restantes_mercado.append(gas_rect)
             posicoes_gasolinas_supermercado = gasolinas_restantes_mercado
             
+            for zumbi in zumbis_mapa2:
+                mexe_zumbi(zumbi, dt, lista_coliders_mapa2)
+                desenha_zumbi(zumbi, dt)
+
+                if zumbi["tirou_vida"] == True:
+                    vidas -= 1
+                    zumbi["tirou_vida"] = False
+
             # WIN CONDITION
             if len(posicoes_gasolinas_supermercado) == 0:
                 mapa_supermercado = False
@@ -691,6 +1033,7 @@ while True:
         if morrer == True:
             anim_time_morrer += dt
             anim_time_morrer_set = anim_time_morrer / 1000
+
             if anim_time_morrer_set > 0.1:
                 frame_atual_morrer += 1
                 
@@ -706,42 +1049,122 @@ while True:
             else:
                 window.blit(morrer_down, (pos_x, pos_y), ((frame_atual_morrer * frame_largura), 0, frame_largura, frame_altura))
 
+
+        elif atacar == True:
+            anim_time_ataque, frame_atual_ataque = avanca_frame(anim_time_ataque, frame_atual_ataque, dt, 0.08, 7)
+
+            if ataque_acertou == False and frame_atual_ataque >= 3:
+
+                if mapa_escola == True:
+                    for zumbi in zumbis_mapa1:
+                        if zumbi["morrer"] == False:
+                            if verificar_ataque_personagem(zumbi) == True:
+                                zumbi["vidas"] -= 1
+                                ataque_acertou = True
+                                break
+
+                elif mapa_supermercado == True:
+                    for zumbi in zumbis_mapa2:
+                        if zumbi["morrer"] == False:
+                            if verificar_ataque_personagem(zumbi) == True:
+                                zumbi["vidas"] -= 1
+                                ataque_acertou = True
+                                break
+
+            if direcao == "up":
+                desenha_frame_anim(ataque_up, pos_x, pos_y, frame_atual_ataque, altura_pulo)
+
+            elif direcao == "down":
+                desenha_frame_anim(ataque_down, pos_x, pos_y, frame_atual_ataque, altura_pulo)
+
+            elif direcao == "left":
+                desenha_frame_anim(ataque_left, pos_x, pos_y, frame_atual_ataque, altura_pulo)
+
+            elif direcao == "right":
+                desenha_frame_anim(ataque_right, pos_x, pos_y, frame_atual_ataque, altura_pulo)
+
+            if frame_atual_ataque == 7:
+                atacar = False
+                frame_atual_ataque = 0
+                anim_time_ataque = 0
+                ataque_acertou = False
+
+
         elif chaves_andar_up:
+            direcao = "up"
             direcao_vertical = "up"
+
             anim_time_walkUp, frame_atual_walkUp = avanca_frame(anim_time_walkUp, frame_atual_walkUp, dt, 0.15, 7)
             desenha_frame_anim(andar_up, pos_x, pos_y, frame_atual_walkUp, altura_pulo)
 
+
         elif chaves_andar_down:
+            direcao = "down"
             direcao_vertical = "down"
+
             anim_time_walkDown, frame_atual_walkDown = avanca_frame(anim_time_walkDown, frame_atual_walkDown, dt, 0.15, 7)
             desenha_frame_anim(andar_down, pos_x, pos_y, frame_atual_walkDown, altura_pulo)
 
+
         elif chaves_andar_left:
             direcao = "left"
+
             anim_time_walkLeft, frame_atual_walkLeft = avanca_frame(anim_time_walkLeft, frame_atual_walkLeft, dt, 0.15, 7)
-            sprite_andar = andar_left_up if direcao_vertical == "up" else andar_left_down
+
+            if direcao_vertical == "up":
+                sprite_andar = andar_left_up
+            else:
+                sprite_andar = andar_left_down
+
             desenha_frame_anim(sprite_andar, pos_x, pos_y, frame_atual_walkLeft, altura_pulo)
+
 
         elif chaves_andar_right:
             direcao = "right"
+
             anim_time_walkRight, frame_atual_walkRight = avanca_frame(anim_time_walkRight, frame_atual_walkRight, dt, 0.15, 7)
-            sprite_andar = andar_right_up if direcao_vertical == "up" else andar_right_down
+
+            if direcao_vertical == "up":
+                sprite_andar = andar_right_up
+            else:
+                sprite_andar = andar_right_down
+
             desenha_frame_anim(sprite_andar, pos_x, pos_y, frame_atual_walkRight, altura_pulo)
+
 
         elif pular == True:
             anim_time_pulo, frame_atual_pulo = avanca_frame(anim_time_pulo, frame_atual_pulo, dt, 0.09, 7)
+
             if direcao == "left":
                 desenha_frame_anim(pulo_left, pos_x, pos_y, frame_atual_pulo, altura_pulo)
+
             elif direcao == "right":
                 desenha_frame_anim(pulo_right, pos_x, pos_y, frame_atual_pulo, altura_pulo)
-            elif direcao_vertical == "up":
+
+            elif direcao == "up":
                 desenha_frame_anim(pulo_up, pos_x, pos_y, frame_atual_pulo, altura_pulo)
+
             else:
                 desenha_frame_anim(pulo_down, pos_x, pos_y, frame_atual_pulo, altura_pulo)
 
+
         else:
             anim_time_idle, frame_atual_idle = avanca_frame(anim_time_idle, frame_atual_idle, dt, 0.15, 7)
-            sprite_idle = idle_up if direcao_vertical == "up" else idle_down
+
+            if direcao_vertical == "up":
+                sprite_idle = idle_up
+            else:
+                sprite_idle = idle_down
+
             desenha_frame_anim(sprite_idle, pos_x, pos_y, frame_atual_idle, 0)
+
+        if vidas >= 1:
+            window.blit(coracao, (800, 40))
+
+        if vidas >= 2:
+            window.blit(coracao, (840, 40))
+
+        if vidas >= 3:
+            window.blit(coracao, (880, 40))
 
     display.update()
