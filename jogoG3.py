@@ -200,25 +200,19 @@ def verificar_ataque_personagem(zumbi):
 
 
 def verificar_ataque_zumbi(zumbi):
-    caixa_personagem = Rect(pos_x + 24, pos_y + altura_pulo + 56, 16, 18)
+    caixa_personagem = Rect(pos_x + 18, pos_y + altura_pulo + 42, 28, 35)
 
-    if zumbi["direcao"] == "right":
-        caixa_ataque_zumbi = Rect(zumbi["x"] + 42, zumbi["y"] + 35, alcance_ataque_zumbi, 35)
-
-    elif zumbi["direcao"] == "left":
-        caixa_ataque_zumbi = Rect(zumbi["x"] - alcance_ataque_zumbi, zumbi["y"] + 35, alcance_ataque_zumbi, 35)
-
-    elif zumbi["direcao"] == "up":
-        caixa_ataque_zumbi = Rect(zumbi["x"] + 18, zumbi["y"] - alcance_ataque_zumbi, 35, alcance_ataque_zumbi)
-
-    else:
-        caixa_ataque_zumbi = Rect(zumbi["x"] + 18, zumbi["y"] + 55, 35, alcance_ataque_zumbi)
+    caixa_ataque_zumbi = Rect(
+        zumbi["x"] - 20,
+        zumbi["y"] - 20,
+        frame_largura + 40,
+        frame_altura + 40
+    )
 
     if caixa_ataque_zumbi.colliderect(caixa_personagem):
         return True
     else:
         return False
-
 
 def cria_collider_zumbi(zumbi):
     return Rect(zumbi["x"] + 22, zumbi["y"] + 55, 20, 20)
