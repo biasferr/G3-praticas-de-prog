@@ -934,14 +934,15 @@ while True:
             pos_x += velocidade * (dt/100)
             direcao = "right"
 
-    player_collider = Rect(pos_x + 24, pos_y + 56, 16, 18)
+    player_collider = Rect(pos_x +23 , pos_y + 40 , 16, 17)
+    
 
     if tela_de_inicio == False and tela_final == False:
         
         if mapa_supermercado == True and spawn_supermercado_pendente == True:
             pos_x = 300
             pos_y = 550
-            player_collider = Rect(pos_x + 24, pos_y + 56, 16, 18)
+            player_collider = Rect(pos_x +23  , pos_y + 40, 16, 17)
             spawn_supermercado_pendente = False
 
         anim_time_gascan, frame_atual_gascan_girando = avanca_frame(
@@ -1166,5 +1167,7 @@ while True:
 
         if vidas >= 3:
             window.blit(coracao, (880, 40))
+
+    #draw.rect(window,(255,0,0),player_collider,2)
 
     display.update()
