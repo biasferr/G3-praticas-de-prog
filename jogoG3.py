@@ -134,7 +134,7 @@ def desenha_telaFinal():
 
     window.blit(gasolina_parada, (450,370))
     texto_x = fontee_pequena.render(f'X {gasolinas_coletadas}',True, (255,255,255))
-    window.blit(texto_x, (485,365))
+    window.blit(texto_x, (495,365))
   
 
     if vencer == True:
@@ -401,7 +401,7 @@ texto_perdeu = fontee.render('VOCE PERDEU!',True, (255,255,255))
 sombra_texto_perdeu = fontee.render('VOCE PERDEU!',True, (61, 61, 61))
 
 gasolina_parada = image.load('objectss/gas can rotations/south.png')
-gasolina_parada = transform.scale(gasolina_parada, (24, 24))
+# gasolina_parada = transform.scale(gasolina_parada, (24, 24))
 
 coracao = image.load('coracao.png')
 coracao = transform.scale(coracao, (34, 34))
@@ -540,7 +540,7 @@ posicoes_objetos_mapa1 = [
 objetos_com_colisao_mapa1 = [
     'cad_frente', 'cart_casa',
     'cart_vazia', 'cart_papel', 'cart_livro', 'cad_tras', 'cart_estojo_lado',
-    'carteira_com_livro_lado', 'cart_vazia_lado', 'armario', 'placa', 'mesa_prof_lado', 'mesa_prof_frente'
+    'carteira_com_livro_lado', 'cart_vazia_lado', 'armario', 'placa', 'mesa_prof_lado', 'mesa_prof_frente','estante'
 ]
 
 lista_coliders_mapa1 = constroi_coliders(
